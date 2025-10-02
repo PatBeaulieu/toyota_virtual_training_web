@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Training Session - Toyota Training</title>
+    <link href="{% static 'css/style.css' %}?v=2" rel="stylesheet">
+    <style>
+        .simple-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #EB0A1E, #d0091a);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+            border-color: #e9ecef;
+        }
+        
+        .readonly-region[readonly] {
+            background-color: #ffffff;
+            color: #333333;
+            cursor: default;
+            border-color: #ddd;
+            opacity: 1;
+        }
+        
+        .readonly-program[readonly] {
+            background-color: #ffffff;
+            color: #333333;
+            cursor: default;
+            border-color: #ddd;
+            opacity: 1;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #EB0A1E;
+            box-shadow: 0 0 0 3px rgba(235, 10, 30, 0.1);
+        }
+        
+        .btn-primary {
+            background: #EB0A1E;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #d0091a;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .help-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="simple-form">
+        <div class="form-header">
+            <h1>📅 Add Training Session</h1>
+            {% if program %}
+                <p>Add sessions for: <strong>{{ program.title }}</strong></p>
+            {% else %}
+                <p>Schedule a new training session with date, time, and Teams link</p>
+            {% endif %}
+        </div>
+        
+        
+        
+        <div class="form-card">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.training_program.id_for_label }}">Training Course *</label>
+                    {{ form.training_program }}
+                    {% if form.training_program.help_text %}
+                    <div class="help-text">{{ form.training_program.help_text }}</div>
+                    {% endif %}
+                </div>
+                
+                {% if form.training_page %}
+                <div class="form-group">
+                    <label for="{{ form.training_page.id_for_label }}">Training Region *</label>
+                    {{ form.training_page }}
+                    {% if form.training_page.help_text %}
+                    <div class="help-text">{{ form.training_page.help_text }}</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <label for="{{ form.date.id_for_label }}">Training Date *</label>
+                    {{ form.date }}
+                    <div class="help-text">Date when the training will take place</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.time_est.id_for_label }}">Training Time *</label>
+                    {{ form.time_est }}
+                    <div class="help-text" id="time-help-text">Time in Eastern Time (EST/EDT)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.teams_link.id_for_label }}">Teams Meeting Link</label>
+                    {{ form.teams_link }}
+                    <div class="help-text">Microsoft Teams meeting link (optional - can be added later)</div>
+                </div>
+                
+                <button type="submit" class="btn-primary">✅ Add Training Session</button>
+            </form>
+            
+            <div style="margin-top: 20px;">
+                <div style="display: flex; justify-content: space-between; gap: 15px;">
+                    <a href="{% url 'simple_admin:simple_admin_dashboard' %}" class="btn-secondary" style="flex: 1;">← Back to Dashboard</a>
+                    {% if show_add_more and program %}
+                        <a href="{% url 'simple_admin:create_training_session_with_program' program.id %}" class="btn-primary" style="flex: 1; background: #28a745;">➕ Add Another Session</a>
+                    {% endif %}
+                    <a href="{% url 'simple_admin:manage_training_sessions' %}" class="btn-secondary" style="flex: 1;">View All Sessions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const regionField = document.getElementById('{{ form.training_page.id_for_label }}');
+            const timeHelpText = document.getElementById('time-help-text');
+            
+            // Regional timezone mapping based on region names
+            const regionTimezones = {
+                'Quebec': 'Eastern Time (EST/EDT)',
+                'Central': 'Eastern Time (EST/EDT)',
+                'Pacific': 'Pacific Time (PST/PDT)',
+                'Prairie': 'Central Time (CST/CDT)',
+                'Atlantic': 'Atlantic Time (AST/ADT)'
+            };
+            
+            function updateTimeHelpText() {
+                if (regionField && regionField.value) {
+                    // Get the selected option text (region name)
+                    const selectedOption = regionField.options[regionField.selectedIndex];
+                    const regionName = selectedOption.text;
+                    
+                    // Find matching timezone
+                    const timezone = regionTimezones[regionName] || 'Eastern Time (EST/EDT)';
+                    timeHelpText.textContent = `Time in ${timezone}`;
+                } else {
+                    timeHelpText.textContent = 'Time in Eastern Time (EST/EDT)';
+                }
+            }
+            
+            // Update on page load
+            updateTimeHelpText();
+            
+            // Update when region selection changes
+            if (regionField) {
+                regionField.addEventListener('change', updateTimeHelpText);
+            }
+        });
+    </script>
+</body>
+</html>

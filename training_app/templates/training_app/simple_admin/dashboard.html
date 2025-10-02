@@ -1,0 +1,845 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toyota Training - Simple Admin</title>
+    <link href="{% static 'css/style.css' %}?v=2" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .simple-admin {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            min-height: calc(100vh - 200px); /* Account for header and footer */
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #EB0A1E, #d0091a);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(235, 10, 30, 0.3);
+        }
+        
+        .admin-header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        
+        .admin-header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .action-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .action-card h3 {
+            color: #EB0A1E;
+            margin: 0 0 15px 0;
+            font-size: 1.5em;
+        }
+        
+        .action-card p {
+            color: #666;
+            margin: 0 0 20px 0;
+            line-height: 1.5;
+        }
+        
+        .btn-primary {
+            background: #EB0A1E;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            width: auto;
+            min-width: 120px;
+            text-align: center;
+            transition: background 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .btn-primary:hover {
+            background: #d0091a;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            width: auto;
+            min-width: 120px;
+            text-align: center;
+            transition: background 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            color: white;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card h4 {
+            color: #EB0A1E;
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+        
+        .clickable-stat {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .clickable-stat:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            background: #f8f9fa;
+        }
+        
+        .click-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        /* Calendar Styles */
+        .calendar-section {
+            margin: 30px 0;
+        }
+        
+        .calendar-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .calendar-container h3 {
+            margin: 0 0 20px 0;
+            color: #EB0A1E;
+            text-align: center;
+        }
+        
+        .calendar-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+        
+        .calendar-month {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .calendar-nav-btn {
+            background: #EB0A1E;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-nav-btn:hover {
+            background: #d0091a;
+            transform: scale(1.1);
+        }
+        
+        .calendar-nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Calendar Legend */
+        .calendar-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .legend-color.region-quebec {
+            background: #EB0A1E;
+        }
+        
+        .legend-color.region-central {
+            background: #1E3A8A;
+        }
+        
+        .legend-color.region-pacific {
+            background: #059669;
+        }
+        
+        .legend-color.region-prairie {
+            background: #EA580C;
+        }
+        
+        .legend-color.region-atlantic {
+            background: #7C3AED;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .calendar-header {
+            background: #EB0A1E;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .calendar-day {
+            background: white;
+            min-height: 80px;
+            padding: 5px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .calendar-day:not(.other-month):hover {
+            background: #f0f8ff !important;
+            border: 1px solid #EB0A1E;
+        }
+        
+        .calendar-day:hover {
+            background: #f8f9fa;
+        }
+        
+        .calendar-day.other-month {
+            background: #f5f5f5;
+            color: #999;
+        }
+        
+        .calendar-day.today {
+            background: #e3f2fd;
+            border: 2px solid #EB0A1E;
+        }
+        
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .session-item {
+            color: white;
+            padding: 2px 4px;
+            margin: 1px 0;
+            border-radius: 3px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: bold;
+        }
+        
+        .session-item:hover {
+            opacity: 0.8;
+            transform: scale(1.02);
+        }
+        
+        /* Region Color Coding */
+        .session-item.region-quebec {
+            background: #EB0A1E; /* Toyota Red */
+        }
+        
+        .session-item.region-central {
+            background: #1E3A8A; /* Blue */
+        }
+        
+        .session-item.region-pacific {
+            background: #059669; /* Green */
+        }
+        
+        .session-item.region-prairie {
+            background: #EA580C; /* Orange */
+        }
+        
+        .session-item.region-atlantic {
+            background: #7C3AED; /* Purple */
+        }
+        
+        .session-time {
+            font-weight: bold;
+        }
+        
+        .session-program {
+            font-size: 9px;
+            opacity: 0.9;
+        }
+        
+        .recent-activity {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .recent-activity h3 {
+            color: #EB0A1E;
+            margin: 0 0 20px 0;
+        }
+        
+        .activity-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        
+        .bottom-button {
+            text-align: center;
+            padding: 20px;
+            background: #EB0A1E;
+            margin-top: 40px;
+        }
+        
+        .bottom-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .view-pages-btn, .advanced-admin-btn, .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+        
+        .view-pages-btn:hover, .advanced-admin-btn:hover, .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+        
+        /* Region selection dropdown */
+        .region-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .region-dropdown-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .region-dropdown-btn:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+        
+        .region-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            z-index: 1001;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 10px;
+        }
+        
+        .region-dropdown-content.show {
+            display: block;
+        }
+        
+        .region-dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            border-radius: 4px;
+            margin: 4px;
+            transition: background 0.3s ease;
+        }
+        
+        .region-dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: #EB0A1E;
+        }
+        
+        .region-dropdown-content a:first-child {
+            margin-top: 8px;
+        }
+        
+        .region-dropdown-content a:last-child {
+            margin-bottom: 8px;
+        }
+        
+        .advanced-admin-btn {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .advanced-admin-btn:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+        }
+        
+        .footer {
+            background: #EB0A1E;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 0;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .footer-link:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="simple-admin">
+        <div class="admin-header">
+            <h1>🚗 Toyota Virtual Training Session Admin</h1>
+            <p>Welcome back, {{ user.first_name|default:user.username }}!</p>
+            <p>Simple & Easy Training Management</p>
+        </div>
+        
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Quick Statistics -->
+        <div class="stats-grid">
+            {% if user.user_type == 'master' %}
+            <div class="stat-card clickable-stat" onclick="window.location.href='{% url 'simple_admin:manage_training_courses' %}'">
+                <h4>Training Programs</h4>
+                <div class="number">{{ total_programs }}</div>
+                <div class="click-hint">Click to manage programs</div>
+            </div>
+            {% endif %}
+            <div class="stat-card clickable-stat" onclick="window.location.href='{% url 'simple_admin:manage_training_sessions' %}'">
+                <h4>Training Sessions</h4>
+                <div class="number">{{ total_sessions }}</div>
+                <div class="click-hint">Click to manage sessions</div>
+            </div>
+            {% if user.user_type == 'master' %}
+            <div class="stat-card clickable-stat" onclick="window.location.href='{% url 'simple_admin:manage_users' %}'">
+                <h4>Users</h4>
+                <div class="number">{{ total_users }}</div>
+                <div class="click-hint">Click to manage users</div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Calendar for All Users -->
+        <div class="calendar-section">
+            <div class="calendar-container">
+                <h3>📅 Training Calendar</h3>
+                {% if user.user_type == 'master' %}
+                <p style="text-align: center; color: #666; margin-bottom: 15px; font-size: 14px;">
+                    💡 Click on any date to create a new training session | 🌈 Colors indicate different regions
+                </p>
+                {% else %}
+                <p style="text-align: center; color: #666; margin-bottom: 15px; font-size: 14px;">
+                    💡 Click on any date to create a new training session
+                </p>
+                {% endif %}
+                
+                <!-- Calendar Navigation -->
+                <div class="calendar-navigation">
+                    <button class="calendar-nav-btn" id="prev-month" onclick="changeMonth(-1)">‹</button>
+                    <div class="calendar-month" id="current-month">October 2025</div>
+                    <button class="calendar-nav-btn" id="next-month" onclick="changeMonth(1)">›</button>
+                </div>
+                
+                <div class="calendar" id="training-calendar">
+                    <!-- Calendar will be populated by JavaScript -->
+                </div>
+                
+                <!-- Color Legend for Master Users -->
+                {% if user.user_type == 'master' %}
+                <div class="calendar-legend">
+                    <div class="legend-item">
+                        <div class="legend-color region-quebec"></div>
+                        <span>🇨🇦 Quebec</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color region-central"></div>
+                        <span>🏢 Central</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color region-pacific"></div>
+                        <span>🌊 Pacific</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color region-prairie"></div>
+                        <span>🌾 Prairie</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color region-atlantic"></div>
+                        <span>🌊 Atlantic</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        {% if recent_sessions %}
+        <div class="recent-activity">
+            <h3>📅 Recent Training Sessions</h3>
+            {% for session in recent_sessions %}
+            <div class="activity-item">
+                <div>
+                    <strong>{{ session.training_page.get_region_display }}</strong> - 
+                    {{ session.date|date:"M j" }} at {{ session.time_est|time:"g:i A" }}
+                </div>
+                <div>
+                    <a href="{% url 'simple_admin:edit_training_session' session.id %}" class="btn-secondary">Edit</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Bottom Buttons -->
+    <div class="bottom-button">
+        <div class="bottom-buttons">
+            {% if user.user_type == 'master' %}
+            <div class="region-dropdown">
+                <button class="region-dropdown-btn" onclick="toggleRegionDropdown()">🌐 View Public Pages</button>
+                <div class="region-dropdown-content" id="regionDropdown">
+                    <a href="/quebec/">🇨🇦 Quebec</a>
+                    <a href="/central/">🏢 Central</a>
+                    <a href="/pacific/">🌊 Pacific</a>
+                    <a href="/prairie/">🌾 Prairie</a>
+                    <a href="/atlantic/">🌊 Atlantic</a>
+                </div>
+            </div>
+            {% else %}
+            <a href="/{{ user.assigned_regions.first.region }}/" class="view-pages-btn">🌐 View Public Pages</a>
+            {% endif %}
+            {% if user.user_type == 'master' %}
+            <a href="/django-admin/" class="advanced-admin-btn">⚙️ Advanced Admin</a>
+            {% endif %}
+            <a href="/admin/logout/" class="logout-btn">🚪 Logout</a>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+        <p>🚗 Toyota Training System | Simple Admin Interface</p>
+    </div>
+    
+    <script>
+        function toggleRegionDropdown() {
+            const dropdown = document.getElementById('regionDropdown');
+            dropdown.classList.toggle('show');
+        }
+        
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.region-dropdown-btn')) {
+                const dropdowns = document.getElementsByClassName('region-dropdown-content');
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+        
+        // Calendar functionality for all users
+        // Global variables for calendar
+        let currentDisplayMonth = new Date().getMonth();
+        let currentDisplayYear = new Date().getFullYear();
+        
+        // Session data from Django
+        const sessions = [
+            {% if calendar_sessions %}
+            {% for session in calendar_sessions %}
+            {
+                id: {{ session.id }},
+                date: '{{ session.date|date:"Y-m-d" }}',
+                time: '{{ session.time_est|time:"H:i" }}',
+                program: '{{ session.training_program.name|escapejs }}',
+                region: '{{ session.training_page.region|escapejs }}'
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+            {% endif %}
+        ];
+        
+        // Month names
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        
+        // Function to generate calendar for a specific month/year
+        function generateCalendar(month, year) {
+            console.log('Generating calendar for:', monthNames[month], year);
+            const calendarEl = document.getElementById('training-calendar');
+            const monthEl = document.getElementById('current-month');
+            
+            if (!calendarEl) return;
+            
+            // Update month display
+            monthEl.textContent = `${monthNames[month]} ${year}`;
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay(); // 0 = Sunday
+            
+            // Calendar headers
+            const headers = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            let calendarHTML = '';
+            
+            // Add headers
+            headers.forEach(header => {
+                calendarHTML += `<div class="calendar-header">${header}</div>`;
+            });
+            
+            // Add empty cells for days before the first day of month
+            for (let i = 0; i < startingDay; i++) {
+                calendarHTML += '<div class="calendar-day other-month"></div>';
+            }
+            
+            // Add days of the month with inline onclick
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const daySessions = sessions.filter(session => session.date === dateStr);
+                const today = new Date();
+                const isToday = today.getDate() === day && today.getMonth() === month && today.getFullYear() === year;
+                
+                let dayHTML = `<div class="calendar-day ${isToday ? 'today' : ''}" onclick="createSessionFromCalendar('${dateStr}')" title="Click to create session">`;
+                dayHTML += `<div class="day-number">${day}</div>`;
+                
+                // Add sessions for this day
+                daySessions.forEach(session => {
+                    dayHTML += `<div class="session-item region-${session.region}" onclick="event.stopPropagation(); manageSession(${session.id})" title="Click to manage session - ${session.region} region">`;
+                    dayHTML += `<div class="session-time">${session.time}</div>`;
+                    dayHTML += `<div class="session-program">${session.program}</div>`;
+                    dayHTML += '</div>';
+                });
+                
+                dayHTML += '</div>';
+                calendarHTML += dayHTML;
+            }
+            
+            calendarEl.innerHTML = calendarHTML;
+            console.log('Calendar generated for', monthNames[month], year);
+        }
+        
+        // Function to change month
+        function changeMonth(direction) {
+            currentDisplayMonth += direction;
+            
+            // Handle year changes
+            if (currentDisplayMonth < 0) {
+                currentDisplayMonth = 11;
+                currentDisplayYear--;
+            } else if (currentDisplayMonth > 11) {
+                currentDisplayMonth = 0;
+                currentDisplayYear++;
+            }
+            
+            // Regenerate calendar
+            generateCalendar(currentDisplayMonth, currentDisplayYear);
+        }
+        
+        // Initialize calendar on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Calendar JavaScript starting...');
+            generateCalendar(currentDisplayMonth, currentDisplayYear);
+        });
+        
+        // Function to manage existing session - go directly to edit page
+        function manageSession(sessionId) {
+            console.log('manageSession called with sessionId:', sessionId);
+            window.location.href = `/simple-admin/edit-session/${sessionId}/`;
+        }
+        
+        // Simple function to create session from calendar click
+        function createSessionFromCalendar(date) {
+            console.log('createSessionFromCalendar called with date:', date);
+            console.log('Redirecting directly to:', `/simple-admin/create-session/?date=${date}`);
+            window.location.href = `/simple-admin/create-session/?date=${date}`;
+        }
+    </script>
+</body>
+</html>

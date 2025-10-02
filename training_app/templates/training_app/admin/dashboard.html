@@ -1,0 +1,234 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toyota Training Admin Dashboard</title>
+    <link href="{% static 'css/style.css' %}?v=2" rel="stylesheet">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .admin-header {
+            background-color: #EB0A1E;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-header h1 {
+            margin: 0;
+        }
+        .logout-btn {
+            background-color: white;
+            color: #EB0A1E;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .logout-btn:hover {
+            background-color: #f0f0f0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-card h3 {
+            color: #EB0A1E;
+            margin: 0 0 10px 0;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .page-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .page-card h3 {
+            color: #EB0A1E;
+            margin: 0 0 15px 0;
+        }
+        .page-actions {
+            margin-top: 15px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            background-color: #EB0A1E;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background-color: #d0091a;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .recent-sessions {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .recent-sessions h3 {
+            color: #EB0A1E;
+            margin: 0 0 15px 0;
+        }
+        .session-list {
+            list-style: none;
+            padding: 0;
+        }
+        .session-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .session-item:last-child {
+            border-bottom: none;
+        }
+        .session-info {
+            flex: 1;
+        }
+        .session-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 3px;
+        }
+        .status-valid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-invalid {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1>Toyota Training Admin Dashboard</h1>
+                <p>Welcome back, {{ user.first_name|default:user.username }}! ({{ user.get_user_type_display }})</p>
+            </div>
+            <div>
+                <a href="/admin/" class="btn btn-secondary">Django Admin</a>
+                <a href="{% url 'admin_logout' %}" class="logout-btn">Logout</a>
+            </div>
+        </div>
+        
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Active Pages</h3>
+                <div class="number">{{ active_pages }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Sessions</h3>
+                <div class="number">{{ total_sessions_count }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Valid Links</h3>
+                <div class="number">{{ sessions_with_valid_links }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Link Validity</h3>
+                <div class="number">{{ link_validity_percentage|floatformat:1 }}%</div>
+            </div>
+        </div>
+        
+        <!-- Training Pages - Hidden for master users -->
+        {% if user.user_type != 'master' %}
+        <div class="pages-grid">
+            {% for page in training_pages %}
+            <div class="page-card">
+                <h3>{{ page.get_region_display }}</h3>
+                <p><strong>Title:</strong> {{ page.title }}</p>
+                <p><strong>Domain:</strong> <a href="https://{{ page.get_domain }}" target="_blank">{{ page.get_domain }}</a></p>
+                <p><strong>Sessions:</strong> {{ page.sessions.count }} training sessions</p>
+                
+                <div class="page-actions">
+                    <a href="/{{ page.region }}/" class="btn btn-secondary" target="_blank">View Page</a>
+                    <a href="/admin/training_app/trainingsession/?training_page__id={{ page.id }}" class="btn">Manage Sessions</a>
+                    {% if user.user_type == 'master' %}
+                    <a href="/admin/training_app/trainingpage/{{ page.id }}/change/" class="btn">Edit Page</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Recent Sessions -->
+        <div class="recent-sessions">
+            <h3>Recent Training Sessions</h3>
+            {% if recent_sessions %}
+            <ul class="session-list">
+                {% for session in recent_sessions %}
+                <li class="session-item">
+                    <div class="session-info">
+                        <strong>{{ session.training_page.get_region_display }}</strong> - 
+                        {{ session.date|date:"M j" }} at {{ session.time_est|time:"g:i A" }}
+                        {% if session.teams_link %}
+                            <br><small>{{ session.teams_link|truncatechars:50 }}</small>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span class="session-status {% if session.teams_link_valid %}status-valid{% else %}status-invalid{% endif %}">
+                            {% if session.teams_link_valid %}✅ Valid{% else %}❌ Invalid{% endif %}
+                        </span>
+                        <a href="/admin/training_app/trainingsession/{{ session.id }}/change/" class="btn">Edit</a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No training sessions found.</p>
+            {% endif %}
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 10px;">
+            <h3>Quick Actions</h3>
+            <a href="/admin/training_app/trainingsession/add/" class="btn">Add New Session</a>
+            <a href="/admin/training_app/customuser/add/" class="btn">Add New User</a>
+            <a href="/admin/training_app/trainingpage/" class="btn btn-secondary">Manage Pages</a>
+        </div>
+    </div>
+</body>
+</html>
+

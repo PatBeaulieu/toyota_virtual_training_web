@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Program Not Assigned - Toyota Training</title>
+    <link href="{% static 'css/style.css' %}?v=2" rel="stylesheet">
+</head>
+<body>
+    <h1>{{ region_display }} Training</h1>
+    
+    <div style="text-align: center; padding: 40px; color: white;">
+        <h2>Training Program Not Assigned</h2>
+        
+        <p>This region does not have a training program assigned yet.</p>
+        <p>Please contact your administrator to assign a training program to this region.</p>
+        
+        <p style="margin-top: 30px;">
+            <a href="/" style="color: white; text-decoration: underline;">← Go to Home</a>
+        </p>
+    </div>
+</body>
+</html>
+
+

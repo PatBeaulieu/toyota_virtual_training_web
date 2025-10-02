@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toyota Training - Confirm Delete</title>
+    <link href="{% static 'css/style.css' %}?v=2" rel="stylesheet">
+    <style>
+        .simple-admin {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .delete-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .delete-header {
+            margin-bottom: 30px;
+        }
+        
+        .delete-header h1 {
+            color: #dc3545;
+            margin: 0 0 15px 0;
+            font-size: 2.2em;
+        }
+        
+        .delete-header p {
+            color: #666;
+            font-size: 1.1em;
+            margin: 0;
+        }
+        
+        .object-info {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .object-info h3 {
+            color: #333;
+            margin: 0 0 15px 0;
+            font-size: 1.3em;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #333;
+            min-width: 120px;
+        }
+        
+        .info-value {
+            color: #666;
+        }
+        
+        .warning-message {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            color: #856404;
+        }
+        
+        .warning-message h4 {
+            margin: 0 0 10px 0;
+            color: #856404;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="simple-admin">
+        <div class="delete-container">
+            <div class="delete-header">
+                <h1>⚠️ Confirm Delete</h1>
+                <p>Are you sure you want to delete this item?</p>
+            </div>
+            
+            {% if object %}
+            <div class="object-info">
+                <h3>Item to Delete:</h3>
+                
+                {% if object.training_page %}
+                <!-- Training Session -->
+                <div class="info-row">
+                    <span class="info-label">Type:</span>
+                    <span class="info-value">Training Session</span>
+                </div>
+                <div class="info-row">
+                        <span class="info-label">Course:</span>
+                        <span class="info-value">{{ object.training_program.title|default:"No course assigned" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date:</span>
+                    <span class="info-value">{{ object.date|date:"F j, Y" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Time:</span>
+                    <span class="info-value">{{ object.time_est|time:"g:i A" }}</span>
+                </div>
+                {% elif object.get_user_type_display %}
+                <!-- User -->
+                <div class="info-row">
+                    <span class="info-label">Type:</span>
+                    <span class="info-value">User Account</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Username:</span>
+                    <span class="info-value">{{ object.username }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">{{ object.first_name }} {{ object.last_name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">User Type:</span>
+                    <span class="info-value">{{ object.get_user_type_display }}</span>
+                </div>
+                {% elif object.name %}
+                <!-- Training Program -->
+                <div class="info-row">
+                    <span class="info-label">Type:</span>
+                    <span class="info-value">Training Program</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">{{ object.name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Title:</span>
+                    <span class="info-value">{{ object.title }}</span>
+                </div>
+                {% else %}
+                <div class="info-row">
+                    <span class="info-label">Item:</span>
+                    <span class="info-value">{{ object }}</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <div class="warning-message">
+                <h4>⚠️ Warning</h4>
+                <p>This action cannot be undone. Once deleted, this item will be permanently removed from the system.</p>
+            </div>
+            
+            <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <div class="button-group">
+                    <button type="submit" class="btn-danger">🗑️ Yes, Delete</button>
+                    <a href="{% url back_url|default:'simple_admin:simple_admin_dashboard' %}" class="btn-secondary">❌ Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

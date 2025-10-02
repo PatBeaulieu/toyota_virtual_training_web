@@ -1,0 +1,237 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Training Course - Toyota Training</title>
+    <link href="{% static 'css/style.css' %}?v=2" rel="stylesheet">
+    <style>
+        .simple-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #EB0A1E, #d0091a);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #EB0A1E;
+            box-shadow: 0 0 0 3px rgba(235, 10, 30, 0.1);
+        }
+        
+        .help-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .btn-primary {
+            background: #EB0A1E;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s ease;
+            box-sizing: border-box;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            background: #d0091a;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s ease;
+            box-sizing: border-box;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            color: white;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .button-container .btn-primary,
+        .button-container .btn-secondary {
+            flex: 1;
+            margin-top: 0;
+        }
+        
+        .example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #EB0A1E;
+        }
+        
+        .example h4 {
+            margin: 0 0 10px 0;
+            color: #EB0A1E;
+        }
+        
+        .example p {
+            margin: 0;
+            color: #666;
+        }
+        
+        .current-info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .current-info h4 {
+            margin: 0 0 10px 0;
+            color: #007bff;
+        }
+        
+        .current-info p {
+            margin: 0;
+            color: #666;
+        }
+        
+        .current-image {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="simple-form">
+        <div class="form-header">
+            <h1>✏️ Edit Training Course</h1>
+            <p>Update the details of your training course</p>
+        </div>
+        
+        <div class="current-info">
+            <h4>📋 Current Course Information:</h4>
+            <p><strong>Name:</strong> {{ course.name }}</p>
+            <p><strong>Title:</strong> {{ course.title }}</p>
+            {% if course.description %}
+                <p><strong>Description:</strong> {{ course.description }}</p>
+            {% endif %}
+            <p><strong>Status:</strong> {% if course.is_active %}✅ Active{% else %}❌ Inactive{% endif %}</p>
+            {% if course.main_image %}
+                <p><strong>Current Image:</strong></p>
+                <img src="{{ course.main_image.url }}" alt="{{ course.name }}" class="current-image">
+            {% endif %}
+        </div>
+        
+        <div class="example">
+            <h4>💡 Example:</h4>
+            <p><strong>Name:</strong> PA466 (short identifier)</p>
+            <p><strong>Title:</strong> PA466 New Grand Highlander Virtual Training</p>
+            <p><strong>Description:</strong> Comprehensive training program for the new Grand Highlander model</p>
+            <p><strong>Image:</strong> Upload a relevant training image</p>
+        </div>
+        
+        <div class="form-card">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.name.id_for_label }}">Course Name *</label>
+                    {{ form.name }}
+                    <div class="help-text">Short identifier for the course (e.g., PA466, PA467)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">Course Title *</label>
+                    {{ form.title }}
+                    <div class="help-text">Full descriptive title of the training course</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}">Description</label>
+                    {{ form.description }}
+                    <div class="help-text">Optional description of what this training covers</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.main_image.id_for_label }}">Course Image</label>
+                    {{ form.main_image }}
+                    <div class="help-text">Upload a new image to replace the current one (optional)</div>
+                </div>
+                
+                <div class="button-container">
+                    <button type="submit" class="btn-primary">💾 Update Course</button>
+                    <a href="{% url 'simple_admin:manage_training_courses' %}" class="btn-secondary">← Back to Courses</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Training Courses - Toyota Training Admin</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #EB0A1E;
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        .header p {
+            color: #666;
+            margin: 10px 0 0 0;
+        }
+        
+        .courses-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .courses-header {
+            background: #EB0A1E;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .courses-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .course-item {
+            border-bottom: 1px solid #eee;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .course-item:last-child {
+            border-bottom: none;
+        }
+        
+        .course-info {
+            flex: 1;
+        }
+        
+        .course-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin: 0 0 5px 0;
+        }
+        
+        .course-title {
+            color: #666;
+            margin: 0 0 10px 0;
+        }
+        
+        .course-meta {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .course-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .no-courses {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .no-courses h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .course-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        
+        .course-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .status-inactive {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 Manage Training Courses</h1>
+        <p>View, edit, and delete training courses</p>
+    </div>
+    
+    <div class="courses-container">
+        <div class="courses-header">
+            <h2>All Training Courses</h2>
+        </div>
+        
+        {% if courses %}
+            {% for course in courses %}
+            <div class="course-item">
+                <div class="course-content">
+                    {% if course.main_image %}
+                        <img src="{{ course.main_image.url }}" alt="{{ course.name }}" class="course-image">
+                    {% endif %}
+                    <div class="course-info">
+                        <div class="course-name">{{ course.name }}</div>
+                        <div class="course-title">{{ course.title }}</div>
+                        <div class="course-meta">
+                            Created: {{ course.created_at|date:"M j, Y" }} | 
+                            Status: <span class="{% if course.is_active %}status-active{% else %}status-inactive{% endif %}">
+                                {% if course.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                            {% if course.description %}
+                                <br>Description: {{ course.description|truncatechars:100 }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-actions">
+                    <a href="{% url 'simple_admin:edit_training_course' course.id %}" class="btn btn-secondary">
+                        ✏️ Edit
+                    </a>
+                    {% if course.is_active %}
+                        <a href="{% url 'simple_admin:create_training_session_with_program' course.id %}" class="btn btn-primary">
+                            📅 Add Session
+                        </a>
+                        <a href="{% url 'simple_admin:toggle_course_status' course.id %}" class="btn btn-secondary">
+                            ⏸️ Deactivate
+                        </a>
+                    {% else %}
+                        <a href="{% url 'simple_admin:toggle_course_status' course.id %}" class="btn btn-primary">
+                            ▶️ Activate
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'simple_admin:delete_training_course' course.id %}" class="btn btn-danger">
+                        🗑️ Delete
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-courses">
+                <h3>📚 No Training Courses</h3>
+                <p>You haven't created any training courses yet.</p>
+                <a href="{% url 'simple_admin:create_training_program' %}" class="btn btn-primary">
+                    Create Your First Course
+                </a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="back-link">
+        <a href="{% url 'simple_admin:simple_admin_dashboard' %}" class="btn btn-secondary">
+            ← Back to Dashboard
+        </a>
+    </div>
+</body>
+</html>

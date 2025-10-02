@@ -1,0 +1,424 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ training_page.title }}</title>
+    <link href="{% static 'css/style.css' %}?v=2" rel="stylesheet">
+    <script src="{% static 'js/script_e.js' %}?v=2"></script>
+    <style>
+        /* Mobile-first responsive design */
+        body {
+            margin: 0;
+            padding: 10px;
+            min-height: 100vh;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin: 20px 0 15px 0;
+            padding: 0 10px;
+            word-wrap: break-word;
+        }
+        
+        h6 {
+            font-size: 0.9rem;
+            margin: 10px 0;
+            padding: 0 10px;
+        }
+        
+        .timezone-info {
+            margin: 15px 10px;
+            padding: 12px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        /* Table responsive container */
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        table.rounded-corners {
+            width: 100%;
+            min-width: 600px; /* Minimum width for readability */
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 8px 6px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        th {
+            font-size: 0.8rem;
+            font-weight: bold;
+            background-color: #808285 !important;
+            color: white;
+        }
+        
+        /* Image responsive */
+        .imgCenter {
+            max-width: 100%;
+            height: auto;
+            margin: 20px auto;
+            border-radius: 15px;
+        }
+        
+        /* Dashboard back button */
+        .dashboard-back-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: #EB0A1E;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            box-shadow: 0 2px 10px rgba(235, 10, 30, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-back-btn:hover {
+            background: #d0091a;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(235, 10, 30, 0.4);
+        }
+        
+        .dashboard-back-btn::before {
+            content: "← ";
+            margin-right: 4px;
+        }
+        
+        /* Tablet styles (768px and up) */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+                margin: 30px 0 20px 0;
+            }
+            
+            h6 {
+                font-size: 1rem;
+            }
+            
+            .timezone-info {
+                margin: 20px auto;
+                max-width: 800px;
+                font-size: 0.9rem;
+            }
+            
+            .table-container {
+                margin: 30px auto;
+                max-width: 1000px;
+            }
+            
+            table.rounded-corners {
+                font-size: 1rem;
+            }
+            
+            th, td {
+                padding: 12px 8px;
+            }
+            
+            th {
+                font-size: 0.9rem;
+            }
+            
+            .dashboard-back-btn {
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Desktop styles (1024px and up) */
+        @media (min-width: 1024px) {
+            body {
+                padding: 30px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+                margin: 40px 0 25px 0;
+            }
+            
+            .timezone-info {
+                font-size: 1rem;
+                padding: 15px;
+            }
+            
+            table.rounded-corners {
+                font-size: 1.1rem;
+            }
+            
+            th, td {
+                padding: 15px 12px;
+            }
+            
+            th {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Mobile styles (max-width: 767px) */
+        @media (max-width: 767px) {
+            .dashboard-back-btn {
+                position: relative;
+                top: auto;
+                right: auto;
+                display: block;
+                margin: 10px auto;
+                text-align: center;
+                width: fit-content;
+                font-size: 14px;
+                padding: 12px 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin: 15px 0 10px 0;
+            }
+            
+            h6 {
+                font-size: 0.8rem;
+            }
+            
+            .timezone-info {
+                font-size: 0.8rem;
+                margin: 10px 5px;
+                padding: 10px;
+            }
+            
+            .table-container {
+                margin: 15px 5px;
+            }
+            
+            table.rounded-corners {
+                font-size: 0.8rem;
+                min-width: 500px;
+            }
+            
+            th, td {
+                padding: 6px 4px;
+            }
+            
+            th {
+                font-size: 0.7rem;
+            }
+            
+            .imgCenter {
+                margin: 15px auto;
+                border-radius: 10px;
+            }
+        }
+        
+        /* Very small screens (max-width: 480px) */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+                margin: 10px 0 8px 0;
+            }
+            
+            .timezone-info {
+                font-size: 0.75rem;
+                margin: 8px 2px;
+                padding: 8px;
+            }
+            
+            .table-container {
+                margin: 10px 2px;
+            }
+            
+            table.rounded-corners {
+                font-size: 0.75rem;
+                min-width: 450px;
+            }
+            
+            th, td {
+                padding: 4px 2px;
+            }
+            
+            th {
+                font-size: 0.65rem;
+            }
+        }
+        
+        /* Teams Link Styling */
+        .link-cell a {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: #EB0A1E;
+            color: white !important;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+        }
+        
+        .link-cell a:hover {
+            background-color: #d0091a;
+            color: white !important;
+        }
+        
+        .link-invalid {
+            color: #ff6b35;
+            font-size: 0.8em;
+            margin-left: 4px;
+        }
+        
+        .link-missing {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .teams-link-info {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <a href="{% url 'simple_admin:simple_admin_dashboard' %}" class="dashboard-back-btn">
+        Back to Dashboard
+    </a>
+    {% endif %}
+    
+    <h1>{{ training_page.title }}</h1>
+    <h6 id="dateTimeDisplay">Loading date and time...</h6>
+    <div class="timezone-info">
+        <strong>All times shown in {{ region_display }} Time ({{ regional_tz_abbr }})</strong><br>
+        Your local time: <span id="localTime">Loading...</span>
+    </div>
+
+    <div class="table-container">
+        <table class="rounded-corners">
+            <tbody>
+            <tr class="head">
+                <th>Date</th>
+                <th>Time ({{ regional_tz_abbr }})</th>
+                <th>Your Local Time</th>
+                <th>Link</th>
+                <th>Status</th>
+            </tr>
+            
+            {% for session in sessions %}
+            <tr data-date="{{ session.date|date:'Y-m-d' }}" data-time="{{ session.time_est|time:'H:i' }}" data-session-id="{{ session.id }}">
+                <td>{{ session.date|date:"F jS" }}</td>
+                <td>{{ session.regional_time|time:"g:i A" }}</td>
+                <td class="local-time">Loading...</td>
+                <td class="link-cell">
+                    {% if session.teams_link %}
+                        <a href="{{ session.teams_link }}" target="_blank" onclick="openTeamsLink(this.href, event)">Join Meeting</a>
+                        <div class="teams-link-info">Click to open in Teams app or browser</div>
+                        {% if not session.teams_link_valid %}
+                            <span class="link-invalid" title="Teams link needs to be tested">⚠️</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="link-missing">Link TBD</span>
+                    {% endif %}
+                </td>
+                <td class="status-cell">Loading...</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 20px; font-style: italic;">
+                    No training sessions scheduled yet. Please check back later.
+                </td>
+            </tr>
+            {% endfor %}
+            
+            </tbody>
+        </table>
+        
+        <p></p>
+        <div>
+            {% if training_page.current_program and training_page.current_program.main_image %}
+                <img class="imgCenter" src="{{ training_page.current_program.main_image.url }}" alt="{{ training_page.title }}">
+            {% elif sessions and sessions.0.training_program.main_image %}
+                <img class="imgCenter" src="{{ sessions.0.training_program.main_image.url }}" alt="{{ training_page.title }}">
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Add some additional info for debugging/development -->
+    {% if debug %}
+    <div style="margin-top: 20px; padding: 10px; background-color: #f0f0f0; border-radius: 5px; font-size: 12px;">
+        <strong>Debug Info:</strong><br>
+        Region: {{ training_page.region }}<br>
+        Program: {{ training_page.current_program.name }} - {{ training_page.current_program.title }}<br>
+        Domain: {{ training_page.get_domain }}<br>
+        Sessions: {{ sessions.count }}<br>
+        Last Updated: {{ training_page.updated_at|date:"Y-m-d H:i:s" }}
+    </div>
+    {% endif %}
+
+    <script>
+        // Enhanced JavaScript for dynamic content
+        
+        // Function to handle Teams links properly
+        function openTeamsLink(url, event) {
+            // Try to open in Teams app first, fallback to browser
+            try {
+                // Check if Teams app is available
+                if (navigator.userAgent.includes('Teams')) {
+                    // Already in Teams, just open the link
+                    return true;
+                } else {
+                    // Try to open with Teams protocol first
+                    const teamsUrl = url.replace('https://teams.microsoft.com', 'msteams:');
+                    window.open(teamsUrl, '_blank');
+                    
+                    // Fallback: if Teams app doesn't open, open in browser after a delay
+                    setTimeout(() => {
+                        window.open(url, '_blank');
+                    }, 1000);
+                    
+                    event.preventDefault();
+                    return false;
+                }
+            } catch (e) {
+                // If anything fails, just open in browser normally
+                console.log('Opening Teams link in browser:', url);
+                return true;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add session IDs to the JavaScript for AJAX status updates
+            const sessions = document.querySelectorAll('tr[data-session-id]');
+            sessions.forEach(function(row) {
+                const sessionId = row.getAttribute('data-session-id');
+                const statusCell = row.querySelector('.status-cell');
+                
+                // You can add AJAX calls here to get real-time status
+                // For now, the existing script_e.js will handle the basic functionality
+            });
+            
+            console.log('Training page loaded for region: {{ training_page.region }}');
+        });
+    </script>
+</body>
+</html>
