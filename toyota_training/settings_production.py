@@ -21,7 +21,9 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.herokuapp.com',  # Heroku domains
-    '.onrender.com',   # Render domains
+    '.onrender.com',   # Render domains - covers all Render subdomains
+    '.render.com',     # Alternative Render domain format
+    'render.com',      # Main Render domain
     '.rtmtoyota.ca',  # Allow all subdomains
     '.yourdomain.com',  # Replace with your actual domain
 ]
@@ -59,6 +61,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://rtmtoyota.ca',
     'https://admin.rtmtoyota.ca',
     'https://yourdomain.com',  # Replace with your actual domain
+    'https://*.onrender.com',  # Render domains
+    'https://*.render.com',    # Alternative Render domain format
 ]
 
 # Static files configuration
