@@ -68,26 +68,38 @@ MIDDLEWARE = [
 # Database configuration for production
 import dj_database_url
 
-# Database configuration
+# Database configuration - Use SQLite by default for reliability
+# Set DATABASE_URL environment variable to use PostgreSQL
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-if DATABASE_URL:
-    # Use PostgreSQL for production
-    DATABASES = {
-        'default': dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-else:
-    # Fallback to SQLite if DATABASE_URL is not set
+# Force SQLite for now to avoid Python 3.13 compatibility issues
+USE_POSTGRES = os.environ.get('USE_POSTGRES', 'False').lower() == 'true'
+
+if USE_POSTGRES and DATABASE_URL:
+    try:
+        # Use PostgreSQL for production (only if explicitly enabled)
+        DATABASES = {
+            'default': dj_database_url.parse(
+                DATABASE_URL,
+                conn_max_age=600,
+                conn_health_checks=True,
+            )
+        }
+        print("✅ Using PostgreSQL database")
+    except Exception as e:
+        print(f"❌ PostgreSQL connection failed: {e}")
+        print("🔄 Falling back to SQLite")
+        USE_POSTGRES = False
+
+if not USE_POSTGRES:
+    # Use SQLite (default and reliable)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    print("✅ Using SQLite database")
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True

@@ -9,6 +9,14 @@ pip install gunicorn==21.2.0
 # Install all dependencies
 pip install -r requirements.txt
 
+# Install psycopg2 only if PostgreSQL is explicitly enabled
+if [ "$USE_POSTGRES" = "true" ]; then
+    echo "Installing PostgreSQL support..."
+    pip install psycopg2-binary==2.9.10
+else
+    echo "Using SQLite (PostgreSQL support skipped)"
+fi
+
 # Make sure appgunicorn script exists and is executable
 if [ -f "appgunicorn" ]; then
     echo "Making appgunicorn executable..."
