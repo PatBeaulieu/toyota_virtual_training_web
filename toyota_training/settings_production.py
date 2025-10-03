@@ -164,17 +164,16 @@ LOGGING = {
     },
 }
 
-# Cache configuration (use Redis in production)
+# Cache configuration (use database cache for simplicity)
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache_table',
     }
 }
 
 # Session engine
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'default'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Password validation (stricter for production)
 AUTH_PASSWORD_VALIDATORS = [
@@ -195,9 +194,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Rate limiting (if using django-ratelimit)
-RATELIMIT_ENABLE = True
-RATELIMIT_USE_CACHE = 'default'
+# Rate limiting disabled for now (would need django-ratelimit package)
 
 # Admin URL for security
 ADMIN_URL = os.environ.get('ADMIN_URL', 'django-admin/')
