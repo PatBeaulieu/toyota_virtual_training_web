@@ -6,7 +6,7 @@ echo "Starting build process..."
 # Ensure gunicorn is installed
 pip install gunicorn==21.2.0
 
-# Install all dependencies (including psycopg for PostgreSQL)
+# Install all dependencies
 pip install -r requirements.txt
 
 echo "✅ All dependencies installed successfully"

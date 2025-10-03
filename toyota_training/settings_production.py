@@ -68,40 +68,15 @@ MIDDLEWARE = [
 # Database configuration for production
 import dj_database_url
 
-# Database configuration - Use PostgreSQL for production
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
-if DATABASE_URL:
-    try:
-        # Use PostgreSQL for production
-        DATABASES = {
-            'default': dj_database_url.parse(
-                DATABASE_URL,
-                conn_max_age=600,
-                conn_health_checks=True,
-            )
-        }
-        print("✅ Using PostgreSQL database")
-        print(f"📊 Database: {DATABASES['default']['ENGINE']}")
-    except Exception as e:
-        print(f"❌ PostgreSQL connection failed: {e}")
-        print("🔄 Falling back to SQLite")
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
-        print("✅ Using SQLite database (fallback)")
-else:
-    # Use SQLite if no DATABASE_URL is provided
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+# Database configuration - Use SQLite for production (simple and reliable)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-    print("⚠️ No DATABASE_URL found, using SQLite database")
+}
+
+print("✅ Using SQLite database (production-ready)")
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
