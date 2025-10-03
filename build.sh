@@ -6,16 +6,10 @@ echo "Starting build process..."
 # Ensure gunicorn is installed
 pip install gunicorn==21.2.0
 
-# Install all dependencies
+# Install all dependencies (including psycopg for PostgreSQL)
 pip install -r requirements.txt
 
-# Install psycopg2 only if PostgreSQL is explicitly enabled
-if [ "$USE_POSTGRES" = "true" ]; then
-    echo "Installing PostgreSQL support..."
-    pip install psycopg2-binary==2.9.10
-else
-    echo "Using SQLite (PostgreSQL support skipped)"
-fi
+echo "✅ All dependencies installed successfully"
 
 # Make sure appgunicorn script exists and is executable
 if [ -f "appgunicorn" ]; then
