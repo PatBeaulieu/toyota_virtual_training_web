@@ -287,12 +287,6 @@
             font-style: italic;
         }
         
-        .teams-link-info {
-            font-size: 0.8em;
-            color: #666;
-            margin-top: 5px;
-            font-style: italic;
-        }
         
         .teams-link.disabled {
             background-color: #ccc !important;
@@ -340,7 +334,6 @@
                 <td class="link-cell">
                     {% if session.teams_link %}
                         <a href="{{ session.teams_link }}" target="_blank" onclick="openTeamsLink(this.href, event)" class="teams-link" data-session-date="{{ session.date|date:'Y-m-d' }}" data-session-time="{{ session.time_est|time:'H:i' }}">Join Meeting</a>
-                        <div class="teams-link-info">Click to open in Teams app or browser</div>
                         <div class="link-timing-info" style="display: none; font-size: 0.8em; color: #666; margin-top: 5px;"></div>
                     {% else %}
                         <span class="link-missing">Link TBD</span>
@@ -363,8 +356,6 @@
         <div>
             {% if training_page.main_image %}
                 <img class="imgCenter" src="{{ training_page.main_image.url }}" alt="{{ training_page.title }}">
-            {% elif sessions and sessions.0.training_program.main_image %}
-                <img class="imgCenter" src="{{ sessions.0.training_program.main_image.url }}" alt="{{ training_page.title }}">
             {% endif %}
         </div>
     </div>
@@ -463,9 +454,7 @@
                         return false;
                     };
                     if (timingInfo) {
-                        const hours = Math.floor(timeDiff / 60);
-                        const minutes = Math.floor(timeDiff % 60);
-                        timingInfo.textContent = `Link available in ${hours}h ${minutes}m`;
+                        timingInfo.textContent = 'Link available 60 minutes before the training start';
                         timingInfo.style.display = 'block';
                     }
                 } else {
