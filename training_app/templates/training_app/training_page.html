@@ -281,11 +281,6 @@
             color: white !important;
         }
         
-        .link-invalid {
-            color: #ff6b35;
-            font-size: 0.8em;
-            margin-left: 4px;
-        }
         
         .link-missing {
             color: #999;
@@ -334,9 +329,6 @@
                     {% if session.teams_link %}
                         <a href="{{ session.teams_link }}" target="_blank" onclick="openTeamsLink(this.href, event)">Join Meeting</a>
                         <div class="teams-link-info">Click to open in Teams app or browser</div>
-                        {% if not session.teams_link_valid %}
-                            <span class="link-invalid" title="Teams link needs to be tested">⚠️</span>
-                        {% endif %}
                     {% else %}
                         <span class="link-missing">Link TBD</span>
                     {% endif %}

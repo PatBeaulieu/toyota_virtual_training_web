@@ -134,11 +134,11 @@ class TrainingPage(models.Model):
     
     @property
     def title(self):
-        """Get the title from the current program or show 'Virtual Training' if no sessions"""
+        """Get the full program title followed by 'Virtual Training' or show 'Virtual Training' if no sessions"""
         if self.current_program:
             # Check if there are any training sessions
             if self.sessions.exists():
-                return self.current_program.title
+                return f"{self.current_program.title} Virtual Training"
             else:
                 return "Virtual Training"
         else:
