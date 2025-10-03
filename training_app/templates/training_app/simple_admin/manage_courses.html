@@ -45,11 +45,37 @@
             color: white;
             padding: 20px;
             text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .courses-header h2 {
             margin: 0;
             font-size: 24px;
+            flex: 1;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-create {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-create:hover {
+            background: white;
+            color: #EB0A1E;
         }
         
         .course-item {
@@ -177,6 +203,11 @@
     <div class="courses-container">
         <div class="courses-header">
             <h2>All Training Courses</h2>
+            <div class="header-actions">
+                <a href="{% url 'simple_admin:create_training_program' %}" class="btn-create">
+                    ➕ Create New Course
+                </a>
+            </div>
         </div>
         
         {% if courses %}
