@@ -309,7 +309,7 @@
     {% endif %}
     
     <h1>{{ training_page.title }}</h1>
-    <h6 style="color: white; font-weight: bold; margin: 10px 0 20px 0; font-size: 1.2em;">{{ region_display }} Zone</h6>
+    <h6 style="color: white; font-weight: bold; margin: 10px 0 20px 0; font-size: 1.2em;">{{ training_page.get_region_display }} Zone</h6>
     <h6 id="dateTimeDisplay">Loading date and time...</h6>
     <div class="timezone-info">
         <strong>All times shown in {{ region_display }} Time ({{ regional_tz_abbr }})</strong><br>
@@ -355,19 +355,7 @@
         
         <p></p>
         <div>
-            {% if training_page.main_image %}
-                {% if training_page.main_image.name == 'training_programs/RAV4.png' %}
-                    <img class="imgCenter" src="{% static 'training_images/RAV4.png' %}" alt="{{ training_page.title }}">
-                {% elif training_page.main_image.name == 'training_programs/RAV4_e2Cd9bs.png' %}
-                    <img class="imgCenter" src="{% static 'training_images/RAV4_e2Cd9bs.png' %}" alt="{{ training_page.title }}">
-                {% elif training_page.main_image.name == 'training_programs/2026toyotac-hr-evsuv4.jpg' %}
-                    <img class="imgCenter" src="{% static 'training_images/2026toyotac-hr-evsuv4.jpg' %}" alt="{{ training_page.title }}">
-                {% else %}
-                    <img class="imgCenter" src="{{ training_page.main_image.url }}" alt="{{ training_page.title }}">
-                {% endif %}
-            {% else %}
-                <div style="color: #999; font-style: italic;">No image available</div>
-            {% endif %}
+            <img class="imgCenter" src="{% static 'training_images/RAV4.png' %}" alt="{{ training_page.title }}">
         </div>
     </div>
 
