@@ -157,14 +157,33 @@ def create_training_program(request):
                     static_images_dir = os.path.join(settings.BASE_DIR, 'training_app', 'static', 'training_images')
                     os.makedirs(static_images_dir, exist_ok=True)
                     
+                    # Get the filename from the uploaded image
+                    filename = program.main_image.name.split('/')[-1]
+                    
                     # Copy the uploaded image to static directory
                     source_path = program.main_image.path
-                    destination_path = os.path.join(static_images_dir, program.main_image.name.split('/')[-1])
-                    shutil.copy2(source_path, destination_path)
+                    destination_path = os.path.join(static_images_dir, filename)
                     
-                    print(f"Copied image from {source_path} to {destination_path}")
+                    # Ensure source file exists
+                    if os.path.exists(source_path):
+                        shutil.copy2(source_path, destination_path)
+                        print(f"✅ Copied image from {source_path} to {destination_path}")
+                        
+                        # Also try to collect static files if in production
+                        if not settings.DEBUG:
+                            try:
+                                from django.core.management import call_command
+                                call_command('collectstatic', '--noinput', verbosity=0)
+                                print(f"✅ Collected static files after image upload")
+                            except Exception as collect_error:
+                                print(f"⚠️ Could not collect static files: {collect_error}")
+                    else:
+                        print(f"⚠️ Source image file not found: {source_path}")
+                        
                 except Exception as e:
-                    print(f"Error copying image to static directory: {e}")
+                    print(f"❌ Error copying image to static directory: {e}")
+                    import traceback
+                    traceback.print_exc()
             
             # Auto-assign the new program to all active training pages
             from training_app.models import TrainingPage

@@ -52,6 +52,13 @@ if [ -d "training_app/static/training_images" ]; then
     cp training_app/static/training_images/* media/training_programs/ 2>/dev/null || echo "No static images to copy"
 fi
 
+# Copy any uploaded images from media to static directory (for persistence)
+echo "Copying uploaded images to static directory..."
+if [ -d "media/training_programs" ]; then
+    mkdir -p training_app/static/training_images
+    cp media/training_programs/* training_app/static/training_images/ 2>/dev/null || echo "No uploaded images to copy"
+fi
+
 # Collect static files
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
 
