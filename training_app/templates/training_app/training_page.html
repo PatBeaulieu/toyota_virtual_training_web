@@ -320,7 +320,7 @@
     {% endif %}
     
     <h1>{{ training_page.title }}</h1>
-    <div class="region-zone-display">{{ training_page.region_display_name }} Zone</div>
+    <div class="region-zone-display" style="color: white; font-weight: bold; margin: 10px 0 20px 0; font-size: 1.2em; text-align: center; background-color: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 5px;">{{ training_page.get_region_display }} Zone</div>
     <h6 id="dateTimeDisplay">Loading date and time...</h6>
     <div class="timezone-info">
         <strong>All times shown in {{ region_display }} Time ({{ regional_tz_abbr }})</strong><br>
@@ -365,12 +365,11 @@
         </table>
         
         <p></p>
+        {% if training_page.main_image %}
         <div style="text-align: center; margin: 20px 0;">
-            <div style="background-color: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 10px; display: inline-block;">
-                <h3 style="color: #EB0A1E; margin: 0 0 10px 0;">Training Image</h3>
-                <p style="color: #333; margin: 0;">Image will be displayed here</p>
-            </div>
+            <img src="{{ training_page.main_image.url }}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;">
         </div>
+        {% endif %}
     </div>
 
     <!-- Add some additional info for debugging/development -->
