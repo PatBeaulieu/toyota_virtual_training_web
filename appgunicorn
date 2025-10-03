@@ -1,9 +1,9 @@
 #!/bin/bash
-# Alias script to handle the appgunicorn command that Render is trying to run
+# This script handles the appgunicorn command that Render is trying to run
 
 echo "🚀 Redirecting appgunicorn to gunicorn..."
 
-# Check if gunicorn is available
+# Install gunicorn if not available
 if ! command -v gunicorn &> /dev/null; then
     echo "Installing gunicorn..."
     pip install gunicorn==21.2.0

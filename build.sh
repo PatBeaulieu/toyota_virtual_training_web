@@ -9,21 +9,35 @@ pip install gunicorn==21.2.0
 # Install all dependencies
 pip install -r requirements.txt
 
-# Create appgunicorn alias to handle Render's command
-echo "Creating appgunicorn alias..."
-cat > appgunicorn << 'EOF'
+# Make sure appgunicorn script exists and is executable
+if [ -f "appgunicorn" ]; then
+    echo "Making appgunicorn executable..."
+    chmod +x appgunicorn
+else
+    echo "Creating appgunicorn script..."
+    cat > appgunicorn << 'EOF'
 #!/bin/bash
+echo "🚀 Redirecting appgunicorn to gunicorn..."
+if ! command -v gunicorn &> /dev/null; then
+    echo "Installing gunicorn..."
+    pip install gunicorn==21.2.0
+fi
 exec gunicorn "$@"
 EOF
-chmod +x appgunicorn
+    chmod +x appgunicorn
+fi
 
-# Also create it in /usr/local/bin to ensure it's in PATH
-echo "Installing appgunicorn to /usr/local/bin..."
-sudo cp appgunicorn /usr/local/bin/ || cp appgunicorn /opt/render/project/src/
-sudo chmod +x /usr/local/bin/appgunicorn || chmod +x /opt/render/project/src/appgunicorn
+# Try to install to system PATH (may not work on Render)
+echo "Attempting to install appgunicorn to system PATH..."
+cp appgunicorn /usr/local/bin/appgunicorn 2>/dev/null || echo "Could not install to /usr/local/bin"
+chmod +x /usr/local/bin/appgunicorn 2>/dev/null || echo "Could not make /usr/local/bin/appgunicorn executable"
 
-# Add current directory to PATH
+# Add current directory to PATH for this session
 export PATH="$PWD:$PATH"
+echo "Added $PWD to PATH"
+
+# Verify the script exists and is executable
+ls -la appgunicorn
 
 # Collect static files
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
