@@ -365,21 +365,9 @@
         </table>
         
         <p></p>
-        <!-- Debug info -->
-        <div style="color: white; font-size: 12px; margin: 10px 0; padding: 10px; background-color: rgba(0,0,0,0.5);">
-            <strong>Debug Info:</strong><br>
-            Training Program: {{ training_page.current_program }}<br>
-            Main Image: {{ training_page.main_image }}<br>
-            Image URL: {% if training_page.main_image %}{{ training_page.main_image.url }}{% else %}No image{% endif %}<br>
-        </div>
-        
-        {% if training_page.main_image %}
+        {% if training_page.main_image_url %}
         <div style="text-align: center; margin: 20px 0;">
-            <img src="{{ training_page.main_image.url }}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;" onerror="console.log('Image failed to load:', this.src); this.style.display='none';">
-        </div>
-        {% else %}
-        <div style="text-align: center; margin: 20px 0; color: white;">
-            <p>No training image available</p>
+            <img src="{{ training_page.main_image_url }}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;">
         </div>
         {% endif %}
     </div>
