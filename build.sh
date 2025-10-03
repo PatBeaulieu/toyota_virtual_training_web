@@ -41,6 +41,11 @@ echo "Added $PWD to PATH"
 # Verify the script exists and is executable
 ls -la appgunicorn
 
+# Create media directories
+echo "Creating media directories..."
+mkdir -p media/training_programs
+mkdir -p media/training_images
+
 # Collect static files
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
 

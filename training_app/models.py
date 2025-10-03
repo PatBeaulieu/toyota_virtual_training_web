@@ -134,18 +134,21 @@ class TrainingPage(models.Model):
     
     @property
     def title(self):
-        """Get the full program title followed by 'Virtual Training' or show 'Virtual Training' if no program"""
+        """Get the region name followed by the full program title or show 'Region Virtual Training' if no program"""
+        # Get the region display name
+        region_display = self.get_region_display()
+        
         # First try current_program
         if self.current_program:
-            return f"{self.current_program.title} Virtual Training"
+            return f"{region_display} - {self.current_program.title} Virtual Training"
         
         # If no current_program, try to get program from first session
         first_session = self.sessions.first()
         if first_session and first_session.training_program:
-            return f"{first_session.training_program.title} Virtual Training"
+            return f"{region_display} - {first_session.training_program.title} Virtual Training"
         
         # Default fallback
-        return "Virtual Training"
+        return f"{region_display} Virtual Training"
     
     @property
     def main_image(self):
@@ -159,6 +162,14 @@ class TrainingPage(models.Model):
         if first_session and first_session.training_program:
             return first_session.training_program.main_image
         
+        return None
+    
+    @property
+    def main_image_url(self):
+        """Get the main image URL with fallback to static files"""
+        image = self.main_image
+        if image:
+            return image.url
         return None
 
 

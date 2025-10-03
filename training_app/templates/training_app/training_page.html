@@ -355,7 +355,7 @@
         <p></p>
         <div>
             {% if training_page.main_image %}
-                <img class="imgCenter" src="{{ training_page.main_image.url }}" alt="{{ training_page.title }}">
+                <img class="imgCenter" src="{{ training_page.main_image.url }}" alt="{{ training_page.title }}" onerror="this.src='{% static 'training_images/' %}{{ training_page.main_image.name|basename }}';">
             {% endif %}
         </div>
     </div>
