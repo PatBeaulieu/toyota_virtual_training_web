@@ -37,9 +37,6 @@
             margin: 10px 0 20px 0;
             font-size: 1.2em;
             text-align: center;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 5px;
         }
         
         .timezone-info {
@@ -320,7 +317,7 @@
     {% endif %}
     
     <h1>{{ training_page.title }}</h1>
-    <div class="region-zone-display" style="color: white; font-weight: bold; margin: 10px 0 20px 0; font-size: 1.2em; text-align: center;">{{ training_page.get_region_display }} Zone</div>
+    <div class="region-zone-display" style="color: white; font-weight: bold; margin: 10px 0 20px 0; font-size: 1.2em; text-align: center; background: none; padding: 0; border-radius: 0;">{{ training_page.get_region_display }} Zone</div>
     <h6 id="dateTimeDisplay">Loading date and time...</h6>
     <div class="timezone-info">
         <strong>All times shown in {{ region_display }} Time ({{ regional_tz_abbr }})</strong><br>
