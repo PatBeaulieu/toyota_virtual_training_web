@@ -365,9 +365,15 @@
         </table>
         
         <p></p>
+        {% if training_page.current_program and training_page.current_program.main_image %}
         <div style="text-align: center; margin: 20px 0;">
-            <img src="{% static 'training_images/RAV4.png' %}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;" onerror="this.style.display='none';">
+            <img src="{{ training_page.current_program.main_image.url }}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;" onerror="this.src='{% static 'training_images/RAV4.png' %}';">
         </div>
+        {% else %}
+        <div style="text-align: center; margin: 20px 0;">
+            <img src="{% static 'training_images/RAV4.png' %}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;">
+        </div>
+        {% endif %}
     </div>
 
     <!-- Add some additional info for debugging/development -->

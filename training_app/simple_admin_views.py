@@ -146,6 +146,26 @@ def create_training_program(request):
         if form.is_valid():
             program = form.save()
             
+            # Copy uploaded image to static directory for production persistence
+            if program.main_image:
+                import os
+                import shutil
+                from django.conf import settings
+                
+                try:
+                    # Create static directory if it doesn't exist
+                    static_images_dir = os.path.join(settings.BASE_DIR, 'training_app', 'static', 'training_images')
+                    os.makedirs(static_images_dir, exist_ok=True)
+                    
+                    # Copy the uploaded image to static directory
+                    source_path = program.main_image.path
+                    destination_path = os.path.join(static_images_dir, program.main_image.name.split('/')[-1])
+                    shutil.copy2(source_path, destination_path)
+                    
+                    print(f"Copied image from {source_path} to {destination_path}")
+                except Exception as e:
+                    print(f"Error copying image to static directory: {e}")
+            
             # Auto-assign the new program to all active training pages
             from training_app.models import TrainingPage
             active_pages = TrainingPage.objects.filter(is_active=True)
