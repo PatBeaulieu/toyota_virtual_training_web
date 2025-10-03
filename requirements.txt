@@ -1,4 +1,3 @@
-# Essential requirements for Toyota Virtual Training Session Admin
 Django==4.2.25
 psycopg2-binary==2.9.9
 pytz==2024.1

@@ -3,8 +3,11 @@
 
 echo "Starting build process..."
 
-# Install dependencies (already done by Render)
-echo "Dependencies installed by Render"
+# Ensure gunicorn is installed
+pip install gunicorn==21.2.0
+
+# Install all dependencies
+pip install -r requirements.txt
 
 # Collect static files
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
