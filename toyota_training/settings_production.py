@@ -6,7 +6,11 @@ Never commit this file with real secrets to version control.
 """
 
 import os
+from pathlib import Path
 from .settings import *
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -26,6 +30,39 @@ ALLOWED_HOSTS = [
     'render.com',      # Main Render domain
     '.rtmtoyota.ca',  # Allow all subdomains
     '.yourdomain.com',  # Replace with your actual domain
+]
+
+# Add Render's external hostname if available (this is automatically set by Render)
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+# For development/testing - allow all hosts if DEBUG is True
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+
+# Application definition - ensure we have the right apps
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'training_app',  # Our training app
+    'whitenoise.runserver_nostatic',  # For serving static files
+]
+
+# Middleware configuration
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 # Database configuration for production
@@ -169,6 +206,45 @@ ADMIN_URL = os.environ.get('ADMIN_URL', 'django-admin/')
 LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = '/simple-admin/'
 LOGOUT_REDIRECT_URL = '/admin/login/'
+
+# URL Configuration
+ROOT_URLCONF = 'toyota_training.urls'
+
+# Template configuration
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+# WSGI Application
+WSGI_APPLICATION = 'toyota_training.wsgi.application'
+
+# Internationalization
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'America/Toronto'
+USE_I18N = True
+USE_TZ = True
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom User Model
+AUTH_USER_MODEL = 'training_app.CustomUser'
 
 # File upload settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
