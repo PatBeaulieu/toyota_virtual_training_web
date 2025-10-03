@@ -21,6 +21,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.herokuapp.com',  # Heroku domains
+    '.onrender.com',   # Render domains
     '.rtmtoyota.ca',  # Allow all subdomains
     '.yourdomain.com',  # Replace with your actual domain
 ]
