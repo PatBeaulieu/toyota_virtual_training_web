@@ -293,6 +293,18 @@
             margin-top: 5px;
             font-style: italic;
         }
+        
+        .teams-link.disabled {
+            background-color: #ccc !important;
+            color: #666 !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+        }
+        
+        .teams-link.disabled:hover {
+            background-color: #ccc !important;
+            color: #666 !important;
+        }
     </style>
 </head>
 <body>
@@ -327,8 +339,9 @@
                 <td class="local-time">Loading...</td>
                 <td class="link-cell">
                     {% if session.teams_link %}
-                        <a href="{{ session.teams_link }}" target="_blank" onclick="openTeamsLink(this.href, event)">Join Meeting</a>
+                        <a href="{{ session.teams_link }}" target="_blank" onclick="openTeamsLink(this.href, event)" class="teams-link" data-session-date="{{ session.date|date:'Y-m-d' }}" data-session-time="{{ session.time_est|time:'H:i' }}">Join Meeting</a>
                         <div class="teams-link-info">Click to open in Teams app or browser</div>
+                        <div class="link-timing-info" style="display: none; font-size: 0.8em; color: #666; margin-top: 5px;"></div>
                     {% else %}
                         <span class="link-missing">Link TBD</span>
                     {% endif %}
@@ -399,6 +412,12 @@
             }
         }
         document.addEventListener('DOMContentLoaded', function() {
+            // Check Teams link timing for each session
+            checkTeamsLinkTiming();
+            
+            // Check every minute to update link availability
+            setInterval(checkTeamsLinkTiming, 60000);
+            
             // Add session IDs to the JavaScript for AJAX status updates
             const sessions = document.querySelectorAll('tr[data-session-id]');
             sessions.forEach(function(row) {
@@ -411,6 +430,58 @@
             
             console.log('Training page loaded for region: {{ training_page.region }}');
         });
+        
+        function checkTeamsLinkTiming() {
+            const teamsLinks = document.querySelectorAll('.teams-link');
+            const now = new Date();
+            
+            teamsLinks.forEach(function(link) {
+                const sessionDate = link.getAttribute('data-session-date');
+                const sessionTime = link.getAttribute('data-session-time');
+                const timingInfo = link.parentNode.querySelector('.link-timing-info');
+                
+                // Create session datetime (assuming Eastern time since that's what's stored)
+                const sessionDateTime = new Date(sessionDate + 'T' + sessionTime);
+                
+                // Calculate time difference in minutes
+                const timeDiff = (sessionDateTime - now) / (1000 * 60);
+                
+                if (timeDiff <= 60 && timeDiff >= 0) {
+                    // Within 60 minutes - enable link
+                    link.classList.remove('disabled');
+                    link.onclick = function(event) {
+                        return openTeamsLink(this.href, event);
+                    };
+                    if (timingInfo) {
+                        timingInfo.style.display = 'none';
+                    }
+                } else if (timeDiff > 60) {
+                    // More than 60 minutes away - disable link
+                    link.classList.add('disabled');
+                    link.onclick = function(event) {
+                        event.preventDefault();
+                        return false;
+                    };
+                    if (timingInfo) {
+                        const hours = Math.floor(timeDiff / 60);
+                        const minutes = Math.floor(timeDiff % 60);
+                        timingInfo.textContent = `Link available in ${hours}h ${minutes}m`;
+                        timingInfo.style.display = 'block';
+                    }
+                } else {
+                    // Session has passed - disable link
+                    link.classList.add('disabled');
+                    link.onclick = function(event) {
+                        event.preventDefault();
+                        return false;
+                    };
+                    if (timingInfo) {
+                        timingInfo.textContent = 'Session has ended';
+                        timingInfo.style.display = 'block';
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
