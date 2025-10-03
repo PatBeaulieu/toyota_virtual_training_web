@@ -58,6 +58,8 @@ class TrainingProgram(models.Model):
     
     main_image = models.ImageField(
         upload_to='training_programs/',
+        blank=True,
+        null=True,
         help_text="Main image for this training program"
     )
     

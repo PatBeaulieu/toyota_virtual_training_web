@@ -143,8 +143,15 @@ def create_training_program(request):
         return redirect('simple_admin:simple_admin_dashboard')
     if request.method == 'POST':
         form = SimpleTrainingProgramForm(request.POST, request.FILES, user=request.user)
+        print(f"Form data: {request.POST}")
+        print(f"Form files: {request.FILES}")
+        print(f"Form is valid: {form.is_valid()}")
+        if not form.is_valid():
+            print(f"Form errors: {form.errors}")
         if form.is_valid():
             program = form.save()
+            print(f"Program saved: {program}")
+            print(f"Program main_image: {program.main_image}")
             
             # Copy uploaded image to static directory for production persistence
             if program.main_image:
