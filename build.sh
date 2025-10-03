@@ -46,6 +46,12 @@ echo "Creating media directories..."
 mkdir -p media/training_programs
 mkdir -p media/training_images
 
+# Copy existing images to media directory for production
+echo "Copying existing images to media directory..."
+if [ -d "training_app/static/training_images" ]; then
+    cp training_app/static/training_images/* media/training_programs/ 2>/dev/null || echo "No static images to copy"
+fi
+
 # Collect static files
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
 
