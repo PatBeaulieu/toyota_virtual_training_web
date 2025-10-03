@@ -123,6 +123,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
+    BASE_DIR / 'training_app' / 'static',
 ]
 
 # Media files (uploaded images)

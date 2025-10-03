@@ -105,6 +105,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # Static files configuration
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
@@ -234,9 +235,7 @@ TIME_ZONE = 'America/Toronto'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Static files (CSS, JavaScript, Images) - configured above
 
 # Media files (user uploads)
 MEDIA_URL = '/media/'

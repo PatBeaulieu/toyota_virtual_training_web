@@ -60,6 +60,17 @@ if [ -d "media/training_programs" ]; then
 fi
 
 # Collect static files
+echo "Collecting static files..."
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
+
+# List collected static files to verify
+echo "Checking collected static files..."
+ls -la staticfiles/
+if [ -d "staticfiles/training_images" ]; then
+    echo "Training images in staticfiles:"
+    ls -la staticfiles/training_images/
+else
+    echo "No training_images directory in staticfiles"
+fi
 
 echo "Build completed successfully!"
