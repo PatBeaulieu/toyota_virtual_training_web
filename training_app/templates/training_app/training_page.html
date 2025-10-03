@@ -348,8 +348,8 @@
         
         <p></p>
         <div>
-            {% if training_page.current_program and training_page.current_program.main_image %}
-                <img class="imgCenter" src="{{ training_page.current_program.main_image.url }}" alt="{{ training_page.title }}">
+            {% if training_page.main_image %}
+                <img class="imgCenter" src="{{ training_page.main_image.url }}" alt="{{ training_page.title }}">
             {% elif sessions and sessions.0.training_program.main_image %}
                 <img class="imgCenter" src="{{ sessions.0.training_program.main_image.url }}" alt="{{ training_page.title }}">
             {% endif %}

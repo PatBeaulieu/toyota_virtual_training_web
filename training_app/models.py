@@ -134,20 +134,18 @@ class TrainingPage(models.Model):
     
     @property
     def title(self):
-        """Get the full program title followed by 'Virtual Training' or show 'Virtual Training' if no sessions"""
+        """Get the full program title followed by 'Virtual Training' or show 'Virtual Training' if no program"""
         if self.current_program:
-            # Check if there are any training sessions
-            if self.sessions.exists():
-                return f"{self.current_program.title} Virtual Training"
-            else:
-                return "Virtual Training"
+            return f"{self.current_program.title} Virtual Training"
         else:
             return "Virtual Training"
     
     @property
     def main_image(self):
         """Get the main image from the current program"""
-        return self.current_program.main_image
+        if self.current_program:
+            return self.current_program.main_image
+        return None
 
 
 class TrainingSession(models.Model):
