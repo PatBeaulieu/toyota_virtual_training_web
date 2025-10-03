@@ -56,9 +56,9 @@ class TrainingProgram(models.Model):
         help_text="Description of the training program"
     )
     
-    main_image = models.CharField(
-        max_length=500,
-        help_text="URL or path to the main image for this training program"
+    main_image = models.ImageField(
+        upload_to='training_images/',
+        help_text="Main image for this training program"
     )
     
     is_active = models.BooleanField(

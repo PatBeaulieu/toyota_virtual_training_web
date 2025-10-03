@@ -220,9 +220,6 @@
                 <div class="form-group">
                     <label for="{{ form.teams_link.id_for_label }}">{{ form.teams_link.label }}</label>
                     {{ form.teams_link }}
-                    {% if form.teams_link.help_text %}
-                        <div class="help-text">{{ form.teams_link.help_text }}</div>
-                    {% endif %}
                     {% if form.teams_link.errors %}
                         <div class="alert alert-error">{{ form.teams_link.errors.0 }}</div>
                     {% endif %}
