@@ -135,16 +135,30 @@ class TrainingPage(models.Model):
     @property
     def title(self):
         """Get the full program title followed by 'Virtual Training' or show 'Virtual Training' if no program"""
+        # First try current_program
         if self.current_program:
             return f"{self.current_program.title} Virtual Training"
-        else:
-            return "Virtual Training"
+        
+        # If no current_program, try to get program from first session
+        first_session = self.sessions.first()
+        if first_session and first_session.training_program:
+            return f"{first_session.training_program.title} Virtual Training"
+        
+        # Default fallback
+        return "Virtual Training"
     
     @property
     def main_image(self):
-        """Get the main image from the current program"""
+        """Get the main image from the current program or first session"""
+        # First try current_program
         if self.current_program:
             return self.current_program.main_image
+        
+        # If no current_program, try to get image from first session
+        first_session = self.sessions.first()
+        if first_session and first_session.training_program:
+            return first_session.training_program.main_image
+        
         return None
 
 
