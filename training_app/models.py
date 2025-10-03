@@ -133,6 +133,11 @@ class TrainingPage(models.Model):
         return f"{self.region}.rtmtoyota.ca"
     
     @property
+    def region_display_name(self):
+        """Returns the display name of the region"""
+        return self.get_region_display()
+    
+    @property
     def title(self):
         """Get the full program title followed by 'Virtual Training' or show 'Virtual Training' if no program"""
         # First try current_program
