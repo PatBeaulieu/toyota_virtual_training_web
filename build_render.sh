@@ -6,6 +6,11 @@ echo "🚀 Starting Render build process..."
 # Install dependencies
 pip install -r requirements.txt
 
+# Verify gunicorn installation
+echo "🔍 Verifying gunicorn installation..."
+which gunicorn || echo "Gunicorn not found in PATH"
+pip show gunicorn || echo "Gunicorn package not found"
+
 # Create media directories if they don't exist
 echo "📁 Creating media directories..."
 mkdir -p media/training_programs

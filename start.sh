@@ -1,27 +1,25 @@
 #!/bin/bash
-# Simple startup script for Render
+# Start script for Render deployment
 
-echo "🚀 Starting Toyota Virtual Training Application..."
+echo "🚀 Starting Toyota Training application..."
+
+# Activate virtual environment if it exists
+if [ -d ".venv" ]; then
+    echo "📦 Activating virtual environment..."
+    source .venv/bin/activate
+fi
 
 # Check if gunicorn is available
 if ! command -v gunicorn &> /dev/null; then
-    echo "Installing gunicorn..."
+    echo "❌ Gunicorn not found, trying to install..."
     pip install gunicorn==21.2.0
 fi
 
-# Create appgunicorn alias if it doesn't exist
-if [ ! -f "./appgunicorn" ]; then
-    echo "Creating appgunicorn alias..."
-    cat > appgunicorn << 'EOF'
-#!/bin/bash
-exec gunicorn "$@"
-EOF
-    chmod +x appgunicorn
-fi
-
-# Add current directory to PATH
-export PATH="$PWD:$PATH"
+# Verify gunicorn installation
+echo "🔍 Verifying gunicorn installation..."
+which gunicorn
+pip show gunicorn
 
 # Start the application
-echo "Starting gunicorn server..."
+echo "🎯 Starting gunicorn server..."
 exec gunicorn toyota_training.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 30
