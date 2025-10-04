@@ -216,7 +216,7 @@
             <div class="course-item">
                 <div class="course-content">
                     {% if course.main_image %}
-                        <img src="{{ course.main_image.url }}" alt="{{ course.name }}" class="course-image" onerror="this.style.display='none';">
+                        <img src="{{ course.main_image.url }}?v={{ course.updated_at|date:'U' }}" alt="{{ course.name }}" class="course-image" onerror="this.style.display='none';">
                     {% endif %}
                     <div class="course-info">
                         <div class="course-name">{{ course.name }}</div>

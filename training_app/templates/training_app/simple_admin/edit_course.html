@@ -168,7 +168,7 @@
             <p><strong>Status:</strong> {% if course.is_active %}✅ Active{% else %}❌ Inactive{% endif %}</p>
             {% if course.main_image %}
                 <p><strong>Current Image:</strong></p>
-                <img src="{{ course.main_image.url }}" alt="{{ course.name }}" class="current-image" onerror="this.style.display='none';">
+                <img src="{{ course.main_image.url }}?v={{ course.updated_at|date:'U' }}" alt="{{ course.name }}" class="current-image" onerror="this.style.display='none';">
             {% endif %}
         </div>
         

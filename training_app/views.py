@@ -18,8 +18,8 @@ def training_page_view(request, region):
     This is what visitors will see when they go to quebec.rtmtoyota.ca, etc.
     """
     try:
-        # Get the training page for this region
-        training_page = get_object_or_404(TrainingPage, region=region, is_active=True)
+        # Get the training page for this region with fresh program data
+        training_page = get_object_or_404(TrainingPage.objects.select_related('current_program'), region=region, is_active=True)
         
         # Note: We don't check for current_program here anymore
         # Sessions should be shown regardless of whether a current_program is assigned
