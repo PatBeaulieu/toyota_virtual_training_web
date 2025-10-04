@@ -1,7 +1,13 @@
 #!/bin/bash
 echo "🚀 Starting Render build process..."
 
-# Install dependencies
+# Install system packages needed for psycopg2
+echo "📦 Installing system packages for PostgreSQL..."
+apt-get update -qq
+apt-get install -y -qq libpq-dev gcc
+
+# Install Python dependencies
+echo "📦 Installing Python dependencies..."
 pip install -r requirements.txt
 
 # Create media directories if they don't exist
