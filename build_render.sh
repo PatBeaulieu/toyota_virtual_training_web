@@ -1,19 +1,26 @@
 #!/bin/bash
-# Simple build script for Render deployment
+# Comprehensive build script for Render deployment
 
-echo "🚀 Starting Render build process..."
+echo "🚀 Starting comprehensive Render build process..."
 
-# Install dependencies
-pip install -r requirements.txt
+# Ensure we're using the right Python version
+echo "🐍 Python version: $(python --version)"
 
-# Verify gunicorn installation
-echo "🔍 Verifying gunicorn installation..."
-which gunicorn || echo "Gunicorn not found in PATH"
-pip show gunicorn || echo "Gunicorn package not found"
+# Install dependencies with verbose output
+echo "📦 Installing all dependencies..."
+pip install -r requirements.txt --verbose
 
-# Create media directories if they don't exist
-echo "📁 Creating media directories..."
+# Verify critical packages
+echo "🔍 Verifying critical package installations..."
+python -c "import django; print(f'✅ Django {django.get_version()}')" || echo "❌ Django missing"
+python -c "import psycopg; print('✅ psycopg available')" || echo "❌ psycopg missing"
+python -c "import cloudinary; print('✅ Cloudinary available')" || echo "❌ Cloudinary missing"
+which gunicorn && echo "✅ Gunicorn in PATH" || echo "❌ Gunicorn not in PATH"
+
+# Create necessary directories
+echo "📁 Creating necessary directories..."
 mkdir -p media/training_programs
+mkdir -p staticfiles
 
 # Run database migrations
 echo "🗄️ Running database migrations..."
@@ -23,9 +30,15 @@ python manage.py migrate --settings=toyota_training.settings_production
 echo "🌱 Seeding database with initial data..."
 python manage.py seed_database --settings=toyota_training.settings_production
 
-# Collect static files - this is the critical part
+# Collect static files
 echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
+
+# Final verification
+echo "✅ Build completed successfully!"
+echo "📊 Final verification:"
+ls -la staticfiles/ || echo "No staticfiles directory"
+ls -la media/ || echo "No media directory"
 
 # Verify static files were collected
 echo "✅ Verifying static file collection..."

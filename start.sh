@@ -1,5 +1,5 @@
 #!/bin/bash
-# Start script for Render deployment
+# Robust start script for Render deployment
 
 echo "🚀 Starting Toyota Training application..."
 
@@ -9,21 +9,18 @@ if [ -d ".venv" ]; then
     source .venv/bin/activate
 fi
 
-# Install all dependencies to ensure they're available
-echo "📦 Installing all dependencies..."
-pip install -r requirements.txt
-
-# Check if gunicorn is available
-if ! command -v gunicorn &> /dev/null; then
-    echo "❌ Gunicorn not found, trying to install..."
-    pip install gunicorn==21.2.0
+# Quick dependency check and install if needed
+echo "🔍 Quick dependency verification..."
+if ! python -c "import django" 2>/dev/null; then
+    echo "📦 Django missing, installing dependencies..."
+    pip install -r requirements.txt --quiet
 fi
 
-# Verify installations
-echo "🔍 Verifying installations..."
-which gunicorn
-pip show gunicorn
-python -c "import django; print(f'Django {django.get_version()} installed')" || echo "❌ Django not found"
+# Verify all critical components
+echo "✅ Verifying all components..."
+python -c "import django; print(f'✅ Django {django.get_version()}')" || { echo "❌ Django failed"; exit 1; }
+python -c "import psycopg; print('✅ psycopg')" || { echo "❌ psycopg failed"; exit 1; }
+python -c "import cloudinary; print('✅ Cloudinary')" || { echo "❌ Cloudinary failed"; exit 1; }
 
 # Start the application
 echo "🎯 Starting gunicorn server..."
