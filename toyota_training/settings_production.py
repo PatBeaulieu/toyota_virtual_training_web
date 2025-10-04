@@ -70,17 +70,21 @@ MIDDLEWARE = [
 # Database configuration for production
 import dj_database_url
 
-# Database configuration - Use PostgreSQL for persistent data
-DATABASES = {
-    'default': dj_database_url.parse(
-        os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+# Database configuration - Try PostgreSQL first, fallback to SQLite
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
-# If no DATABASE_URL is provided, fallback to SQLite
-if 'sqlite' in DATABASES['default']['ENGINE']:
+if DATABASE_URL and 'postgres' in DATABASE_URL:
+    # Use PostgreSQL if DATABASE_URL is provided and it's a PostgreSQL URL
+    DATABASES = {
+        'default': dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+    print("✅ Using PostgreSQL database (persistent data)")
+else:
+    # Fallback to SQLite for now (until PostgreSQL is properly configured)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -88,8 +92,7 @@ if 'sqlite' in DATABASES['default']['ENGINE']:
         }
     }
     print("⚠️ Using SQLite database (data will be lost on deployment)")
-else:
-    print("✅ Using PostgreSQL database (persistent data)")
+    print("💡 To enable persistent data, add a PostgreSQL DATABASE_URL environment variable")
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
