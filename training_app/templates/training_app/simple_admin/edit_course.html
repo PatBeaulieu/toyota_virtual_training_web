@@ -169,7 +169,7 @@
             {% if course.main_image %}
                 <p><strong>Current Image:</strong></p>
                 {% with course.main_image.name|cut:"training_programs/" as filename %}
-                <img src="{% static 'training_images/'|add:filename %}" alt="{{ course.name }}" class="current-image" onerror="this.src='{% static 'training_images/RAV4.png' %}';">
+                <img src="{% static 'training_images/'|add:filename %}" alt="{{ course.name }}" class="current-image" onerror="this.style.display='none';">
                 {% endwith %}
             {% endif %}
         </div>

@@ -366,7 +366,7 @@
         <div style="text-align: center; margin: 20px 0;">
             {% with training_page.current_program.main_image.name|slice:"-1" as image_filename %}
             {% with training_page.current_program.main_image.name|cut:"training_programs/" as filename %}
-            <img src="{% static 'training_images/'|add:filename %}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;" onerror="this.src='{% static 'training_images/RAV4.png' %}';">
+            <img src="{% static 'training_images/'|add:filename %}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;" onerror="this.style.display='none';">
             {% endwith %}
             {% endwith %}
         </div>
