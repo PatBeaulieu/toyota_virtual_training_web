@@ -515,7 +515,13 @@ def edit_training_course(request, course_id):
     if request.method == 'POST':
         form = SimpleTrainingProgramForm(request.POST, request.FILES, instance=course, user=request.user)
         if form.is_valid():
-            form.save()
+            updated_course = form.save()
+            
+            # Debug image URL after update
+            if updated_course.main_image:
+                print(f"✅ Updated image URL: {updated_course.main_image.url}")
+                print(f"✅ Image name: {updated_course.main_image.name}")
+            
             messages.success(request, f'✅ Training course "{course.name}" updated successfully!')
             return redirect('simple_admin:manage_training_courses')
     else:

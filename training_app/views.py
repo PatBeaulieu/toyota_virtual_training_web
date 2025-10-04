@@ -21,6 +21,11 @@ def training_page_view(request, region):
         # Get the training page for this region with fresh program data
         training_page = get_object_or_404(TrainingPage.objects.select_related('current_program'), region=region, is_active=True)
         
+        # Debug image URL for troubleshooting
+        if training_page.current_program and training_page.current_program.main_image:
+            print(f"🔍 Region {region} - Image URL: {training_page.current_program.main_image.url}")
+            print(f"🔍 Region {region} - Image name: {training_page.current_program.main_image.name}")
+        
         # Note: We don't check for current_program here anymore
         # Sessions should be shown regardless of whether a current_program is assigned
         
