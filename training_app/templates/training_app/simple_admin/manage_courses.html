@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -215,7 +216,9 @@
             <div class="course-item">
                 <div class="course-content">
                     {% if course.main_image %}
-                        <img src="{{ course.main_image.url }}" alt="{{ course.name }}" class="course-image">
+                        {% with course.main_image.name|cut:"training_programs/" as filename %}
+                        <img src="{% static 'training_images/'|add:filename %}" alt="{{ course.name }}" class="course-image" onerror="this.src='{% static 'training_images/RAV4.png' %}';">
+                        {% endwith %}
                     {% endif %}
                     <div class="course-info">
                         <div class="course-name">{{ course.name }}</div>

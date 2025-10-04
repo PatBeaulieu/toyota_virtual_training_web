@@ -168,7 +168,9 @@
             <p><strong>Status:</strong> {% if course.is_active %}✅ Active{% else %}❌ Inactive{% endif %}</p>
             {% if course.main_image %}
                 <p><strong>Current Image:</strong></p>
-                <img src="{{ course.main_image.url }}" alt="{{ course.name }}" class="current-image">
+                {% with course.main_image.name|cut:"training_programs/" as filename %}
+                <img src="{% static 'training_images/'|add:filename %}" alt="{{ course.name }}" class="current-image" onerror="this.src='{% static 'training_images/RAV4.png' %}';">
+                {% endwith %}
             {% endif %}
         </div>
         
