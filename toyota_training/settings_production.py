@@ -70,15 +70,26 @@ MIDDLEWARE = [
 # Database configuration for production
 import dj_database_url
 
-# Database configuration - Use SQLite for production (simple and reliable)
+# Database configuration - Use PostgreSQL for persistent data
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(
+        os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
-print("✅ Using SQLite database (production-ready)")
+# If no DATABASE_URL is provided, fallback to SQLite
+if 'sqlite' in DATABASES['default']['ENGINE']:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    print("⚠️ Using SQLite database (data will be lost on deployment)")
+else:
+    print("✅ Using PostgreSQL database (persistent data)")
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True

@@ -10,6 +10,14 @@ pip install -r requirements.txt
 echo "📁 Creating media directories..."
 mkdir -p media/training_programs
 
+# Run database migrations
+echo "🗄️ Running database migrations..."
+python manage.py migrate --settings=toyota_training.settings_production
+
+# Seed the database with initial data
+echo "🌱 Seeding database with initial data..."
+python manage.py seed_database --settings=toyota_training.settings_production
+
 # Collect static files - this is the critical part
 echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
