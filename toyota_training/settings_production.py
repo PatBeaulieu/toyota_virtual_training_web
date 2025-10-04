@@ -68,26 +68,15 @@ MIDDLEWARE = [
 ]
 
 # Database configuration for production
-import dj_database_url
-
-# Use PostgreSQL if DATABASE_URL is provided (Render's managed database)
-# Fallback to SQLite for development
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
+# Temporarily using SQLite until PostgreSQL compatibility is resolved
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-    print("✅ Using PostgreSQL database (persistent data)")
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-    print("⚠️ Using SQLite database (data will be lost on deployment)")
-    print("💡 Create a PostgreSQL database in Render dashboard for persistent data")
+}
+
+print("✅ Using SQLite database with automatic seeding")
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True

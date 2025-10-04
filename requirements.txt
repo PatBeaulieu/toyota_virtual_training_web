@@ -8,4 +8,3 @@ gunicorn==21.2.0
 setuptools==68.2.2
 cloudinary==1.44.1
 django-cloudinary-storage==0.3.0
-psycopg2-binary==2.9.9
