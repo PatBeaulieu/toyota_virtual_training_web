@@ -63,6 +63,12 @@ fi
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
 
+# If collectstatic fails, try with verbose output
+if [ $? -ne 0 ]; then
+    echo "❌ collectstatic failed, trying with verbose output..."
+    python manage.py collectstatic --settings=toyota_training.settings_production
+fi
+
 # Verify static files were collected properly
 echo "Verifying static file collection..."
 if [ -d "staticfiles" ]; then
