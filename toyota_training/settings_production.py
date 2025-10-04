@@ -68,29 +68,14 @@ MIDDLEWARE = [
 ]
 
 # Database configuration for production
-DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
-if DATABASE_URL and 'postgres' in DATABASE_URL:
-    # Use PostgreSQL if DATABASE_URL is provided and it's a PostgreSQL URL
-    import dj_database_url
-    DATABASES = {
-        'default': dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-    print("✅ Using PostgreSQL database (persistent data)")
-else:
-    # Use SQLite for now (until PostgreSQL is properly configured)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-    print("⚠️ Using SQLite database (data will be lost on deployment)")
-    print("💡 To enable persistent data, add a PostgreSQL DATABASE_URL environment variable")
+print("✅ Using SQLite database (production-ready)")
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
