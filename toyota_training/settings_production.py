@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',  # For cloud file storage
+    'cloudinary',  # Cloudinary integration
     'training_app',  # Our training app
     'whitenoise.runserver_nostatic',  # For serving static files
 ]
@@ -243,7 +245,28 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images) - configured above
 
-# Media files (user uploads)
+# Media files (user uploads) - Using Cloudinary for persistent storage
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+# Cloudinary configuration for persistent file storage
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'your_cloud_name'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'your_api_key'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'your_api_secret'),
+}
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=CLOUDINARY_STORAGE['API_SECRET'],
+)
+
+# Use Cloudinary for media file storage
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Fallback to local media for development
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
