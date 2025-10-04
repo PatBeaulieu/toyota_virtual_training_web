@@ -63,6 +63,29 @@ fi
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
 
+# Verify static files were collected properly
+echo "Verifying static file collection..."
+if [ -d "staticfiles" ]; then
+    echo "✅ staticfiles directory exists"
+    ls -la staticfiles/
+    
+    if [ -d "staticfiles/training_images" ]; then
+        echo "✅ training_images directory in staticfiles:"
+        ls -la staticfiles/training_images/
+    else
+        echo "❌ training_images directory missing from staticfiles"
+    fi
+    
+    if [ -d "staticfiles/css" ]; then
+        echo "✅ css directory in staticfiles:"
+        ls -la staticfiles/css/
+    else
+        echo "❌ css directory missing from staticfiles"
+    fi
+else
+    echo "❌ staticfiles directory not created"
+fi
+
 # List collected static files to verify
 echo "Checking collected static files..."
 ls -la staticfiles/

@@ -109,6 +109,12 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
+# Static files directories - CRITICAL for finding app static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'training_app', 'static'),
+]
+
 # Media files configuration (use cloud storage in production)
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
