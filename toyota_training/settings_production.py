@@ -116,7 +116,7 @@ STATICFILES_DIRS = [
 ]
 
 # Media files configuration (use cloud storage in production)
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
