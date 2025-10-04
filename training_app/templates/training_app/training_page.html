@@ -364,7 +364,16 @@
         <p></p>
         {% if training_page.current_program and training_page.current_program.main_image %}
         <div style="text-align: center; margin: 20px 0;">
-            <img src="{{ training_page.current_program.main_image.url }}?v={{ training_page.current_program.updated_at|date:'U' }}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;" onerror="this.style.display='none';">
+            <img id="training-image" src="{{ training_page.current_program.main_image.url }}?v={{ training_page.current_program.updated_at|date:'U' }}&cache={{ training_page.current_program.id }}&t={{ 'now'|date:'U' }}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;" onerror="this.style.display='none';">
+            <script>
+                // Force refresh image to prevent caching issues
+                document.addEventListener('DOMContentLoaded', function() {
+                    const img = document.getElementById('training-image');
+                    if (img) {
+                        img.src = img.src.split('&t=')[0] + '&t=' + Date.now();
+                    }
+                });
+            </script>
         </div>
         {% else %}
         <div style="text-align: center; margin: 20px 0;">
