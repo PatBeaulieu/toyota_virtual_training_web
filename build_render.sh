@@ -6,6 +6,10 @@ echo "🚀 Starting Render build process..."
 # Install dependencies
 pip install -r requirements.txt
 
+# Create media directories if they don't exist
+echo "📁 Creating media directories..."
+mkdir -p media/training_programs
+
 # Collect static files - this is the critical part
 echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput --settings=toyota_training.settings_production
@@ -31,6 +35,22 @@ if [ -d "staticfiles" ]; then
     fi
 else
     echo "❌ staticfiles directory not created!"
+fi
+
+# Verify media files exist
+echo "📁 Verifying media files..."
+if [ -d "media" ]; then
+    echo "📂 media directory exists"
+    ls -la media/
+    
+    if [ -d "media/training_programs" ]; then
+        echo "🖼️  Training program images found:"
+        ls -la media/training_programs/
+    else
+        echo "❌ media/training_programs directory missing"
+    fi
+else
+    echo "❌ media directory not created!"
 fi
 
 echo "🏁 Build process completed!"

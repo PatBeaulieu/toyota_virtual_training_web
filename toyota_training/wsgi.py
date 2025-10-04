@@ -16,6 +16,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'toyota_training.settings_produc
 
 application = get_wsgi_application()
 
-# Configure WhiteNoise to serve static files
+# Configure WhiteNoise to serve static and media files
 from django.conf import settings
+from whitenoise.storage import CompressedManifestStaticFilesStorage
+
+# Serve both static files and media files
 application = WhiteNoise(application, root=settings.STATIC_ROOT)
+application.add_files(settings.MEDIA_ROOT, prefix=settings.MEDIA_URL.strip('/'))
