@@ -68,13 +68,11 @@ MIDDLEWARE = [
 ]
 
 # Database configuration for production
-import dj_database_url
-
-# Database configuration - Try PostgreSQL first, fallback to SQLite
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL and 'postgres' in DATABASE_URL:
     # Use PostgreSQL if DATABASE_URL is provided and it's a PostgreSQL URL
+    import dj_database_url
     DATABASES = {
         'default': dj_database_url.parse(
             DATABASE_URL,
@@ -84,7 +82,7 @@ if DATABASE_URL and 'postgres' in DATABASE_URL:
     }
     print("✅ Using PostgreSQL database (persistent data)")
 else:
-    # Fallback to SQLite for now (until PostgreSQL is properly configured)
+    # Use SQLite for now (until PostgreSQL is properly configured)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
