@@ -176,7 +176,9 @@ function updateDateTime() {
             second: '2-digit'
         };
         const estLocale = window.IS_QUEBEC ? 'fr-CA' : 'en-US';
-        const tzLabel = window.IS_QUEBEC ? 'HAE' : 'EST/EDT';
+        // Auto-switch Quebec timezone label based on browser DST
+        const isDST = new Date().toLocaleString('en-US', { timeZone: TRAINING_TIMEZONE, timeZoneName: 'short' }).includes('DT');
+        const tzLabel = window.IS_QUEBEC ? (isDST ? 'HAE' : 'HNE') : 'EST/EDT';
         cachedDOMElements.estDisplay.textContent = now.toLocaleString(estLocale, estOptions) + ` (${tzLabel})`;
     }
 

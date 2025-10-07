@@ -238,5 +238,18 @@ class SecurityMiddleware:
         response['X-XSS-Protection'] = '1; mode=block'
         response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         response['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+        # Conservative CSP that works with current inline styles/scripts while avoiding risky sources
+        # Note: When time permits, migrate inline styles to CSS and remove 'unsafe-inline'
+        csp = (
+            "default-src 'self'; "
+            "img-src 'self' data: https:; "
+            "style-src 'self' 'unsafe-inline'; "
+            "script-src 'self'; "
+            "connect-src 'self'; "
+            "frame-ancestors 'none'; "
+            "base-uri 'self'"
+        )
+        if 'Content-Security-Policy' not in response:
+            response['Content-Security-Policy'] = csp
         
         return response
