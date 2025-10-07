@@ -295,18 +295,7 @@
                                 {% endif %}
                             </span>
                         </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Link Status:</span>
-                            <span class="detail-value">
-                                {% if session.teams_link_valid %}
-                                    <span style="color: green;">✅ Valid</span>
-                                {% elif session.teams_link_valid is False %}
-                                    <span style="color: red;">❌ Invalid</span>
-                                {% else %}
-                                    <span style="color: orange;">⚠️ Not tested</span>
-                                {% endif %}
-                            </span>
-                        </div>
+                        
                         <div class="detail-row">
                             <span class="detail-label">Created:</span>
                             <span class="detail-value">{{ session.created_at|date:"M j, Y g:i A" }}</span>
