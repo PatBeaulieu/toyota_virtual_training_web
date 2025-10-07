@@ -55,9 +55,11 @@ MANIFEST
 
 # Environment variables
 .env
+.env.*
 .env.local
 .env.production
 .env.staging
+.env.postgres
 
 # Logs
 logs/
@@ -84,3 +86,18 @@ node_modules/
 # Temporary files
 tmp/
 temp/
+cookies.txt
+
+# Database backups
+*.sql
+*.sql.gz
+backup*.json
+backup*.sql
+data_backup.json
+
+# PostgreSQL local testing
+.env.postgres
+
+# Test files
+test_output/
+.pytest_cache/

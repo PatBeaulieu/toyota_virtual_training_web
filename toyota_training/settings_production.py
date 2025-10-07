@@ -7,6 +7,7 @@ Never commit this file with real secrets to version control.
 
 import os
 from pathlib import Path
+import dj_database_url
 from .settings import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -68,15 +69,67 @@ MIDDLEWARE = [
 ]
 
 # Database configuration for production
-# Temporarily using SQLite until PostgreSQL compatibility is resolved
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# PostgreSQL is REQUIRED for production deployments
 
-print("✅ Using SQLite database with automatic seeding")
+if os.environ.get('DATABASE_URL'):
+    # Use DATABASE_URL if provided (format: postgres://user:password@host:port/dbname)
+    # This is the preferred method for platforms like Heroku, Render, Railway
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,  # Connection pooling: keep connections alive for 10 minutes
+            conn_health_checks=True,  # Check connection health before reusing
+            ssl_require=False,  # Set based on your hosting provider's requirements
+        )
+    }
+    # Override sslmode if needed (some providers require 'require', others use 'disable')
+    if 'sslmode' not in DATABASES['default'].get('OPTIONS', {}):
+        DATABASES['default'].setdefault('OPTIONS', {})['sslmode'] = 'prefer'
+    
+    print("✅ Using PostgreSQL database via DATABASE_URL")
+    
+elif os.environ.get('DB_NAME'):
+    # Use individual environment variables for PostgreSQL
+    # This method provides more granular control
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DB_NAME'),
+            'USER': os.environ.get('DB_USER'),
+            'PASSWORD': os.environ.get('DB_PASSWORD'),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+            'CONN_MAX_AGE': 600,  # Connection pooling
+            'OPTIONS': {
+                'connect_timeout': 10,  # Timeout for initial connection
+                'sslmode': os.environ.get('DB_SSLMODE', 'prefer'),  # SSL configuration
+                # Performance optimizations
+                'options': '-c statement_timeout=30000',  # 30 second statement timeout
+            },
+            # Additional pool configuration for production
+            'ATOMIC_REQUESTS': True,  # Wrap each request in a transaction
+            'AUTOCOMMIT': True,
+        }
+    }
+    print("✅ Using PostgreSQL database")
+    
+else:
+    # No database configuration found - FAIL LOUDLY in production
+    if not DEBUG:
+        raise RuntimeError(
+            "🚨 CRITICAL: No PostgreSQL configuration found!\n"
+            "Production requires PostgreSQL. Please set DATABASE_URL or individual DB_* variables.\n"
+            "See PRODUCTION_DEPLOYMENT_POSTGRESQL.md for configuration instructions."
+        )
+    else:
+        # Allow SQLite in development/testing only
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
+        print("⚠️ Using SQLite database (DEVELOPMENT MODE ONLY)")
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
