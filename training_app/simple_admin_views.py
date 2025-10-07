@@ -17,6 +17,8 @@ from .performance import monitor_db_queries, get_optimized_training_sessions, ge
 from .error_handlers import handle_database_error, handle_permission_error
 import logging
 
+logger = logging.getLogger(__name__)
+
 User = get_user_model()
 
 
@@ -386,20 +388,30 @@ def create_user(request):
     if request.method == 'POST':
         form = SimpleUserForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            
-            # Ensure username is set from email if not already set
-            if not user.username and form.cleaned_data.get('email'):
-                user.username = form.cleaned_data['email']
-            
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-            
-            # Save the many-to-many relationship for assigned_regions
-            form.save_m2m()
-            
-            messages.success(request, f'✅ User "{user.username}" created successfully!')
-            return redirect('simple_admin:simple_admin_dashboard')
+            try:
+                user = form.save(commit=False)
+                
+                # Ensure username is set from email if not already set
+                if not user.username and form.cleaned_data.get('email'):
+                    user.username = form.cleaned_data['email']
+                
+                user.set_password(form.cleaned_data['password'])
+                user.save()
+                
+                # Save the many-to-many relationship for assigned_regions
+                form.save_m2m()
+                
+                messages.success(request, f'✅ User "{user.username}" created successfully!')
+                return redirect('simple_admin:simple_admin_dashboard')
+            except Exception as e:
+                logger.error(f"Error creating user: {e}")
+                messages.error(request, f'❌ Error creating user: {str(e)}')
+        else:
+            # Display form validation errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'❌ {field}: {error}')
+            logger.warning(f"User creation form validation failed: {form.errors}")
     else:
         form = SimpleUserForm()
     
