@@ -368,25 +368,27 @@
         </table>
         
         <p></p>
-        {% if training_page.current_program and training_page.current_program.main_image %}
-        <div style="text-align: center; margin: 20px 0;">
-            <img id="training-image" src="{{ training_page.current_program.main_image.url }}?v={{ training_page.current_program.updated_at|date:'U' }}&cache={{ training_page.current_program.id }}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;" onerror="this.style.display='none';">
-            <script>
-                // Force refresh image to prevent caching issues
-                document.addEventListener('DOMContentLoaded', function() {
-                    const img = document.getElementById('training-image');
-                    if (img) {
-                        img.src = img.src.split('&t=')[0] + '&t=' + Date.now();
-                    }
-                });
-            </script>
-        </div>
-        {% else %}
-        <div style="text-align: center; margin: 20px 0;">
-            <img src="{% static 'training_images/RAV4.png' %}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;">
-        </div>
-        {% endif %}
     </div>
+    
+    <!-- Image container matching table width -->
+    {% if training_page.current_program and training_page.current_program.main_image %}
+    <div class="table-container" style="text-align: center;">
+        <img id="training-image" src="{{ training_page.current_program.main_image.url }}?v={{ training_page.current_program.updated_at|date:'U' }}&cache={{ training_page.current_program.id }}" alt="{{ training_page.title }}" style="width: 100%; height: auto; border: 2px solid white; border-radius: 10px; display: block;" onerror="this.style.display='none';">
+        <script>
+            // Force refresh image to prevent caching issues
+            document.addEventListener('DOMContentLoaded', function() {
+                const img = document.getElementById('training-image');
+                if (img) {
+                    img.src = img.src.split('&t=')[0] + '&t=' + Date.now();
+                }
+            });
+        </script>
+    </div>
+    {% else %}
+    <div class="table-container" style="text-align: center;">
+        <img src="{% static 'training_images/RAV4.png' %}" alt="{{ training_page.title }}" style="width: 100%; height: auto; border: 2px solid white; border-radius: 10px; display: block;">
+    </div>
+    {% endif %}
 
     <!-- Add some additional info for debugging/development -->
     {% if debug %}
