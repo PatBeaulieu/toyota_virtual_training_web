@@ -176,7 +176,8 @@ function updateDateTime() {
             second: '2-digit'
         };
         const estLocale = window.IS_QUEBEC ? 'fr-CA' : 'en-US';
-        cachedDOMElements.estDisplay.textContent = now.toLocaleString(estLocale, estOptions) + ' (EST/EDT)';
+        const tzLabel = window.IS_QUEBEC ? 'HAE' : 'EST/EDT';
+        cachedDOMElements.estDisplay.textContent = now.toLocaleString(estLocale, estOptions) + ` (${tzLabel})`;
     }
 
     // Local browser time display
