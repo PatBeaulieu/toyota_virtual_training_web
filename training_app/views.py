@@ -23,11 +23,8 @@ def training_page_view(request, region):
         
         # Debug image URL for troubleshooting
         if training_page.current_program and training_page.current_program.main_image:
-            try:
-                print(f"🔍 Region {region} - Image URL: {training_page.current_program.main_image.url}")
-                print(f"🔍 Region {region} - Image name: {training_page.current_program.main_image.name}")
-            except Exception as e:
-                print(f"⚠️ Region {region} - Error accessing image: {e}")
+            print(f"🔍 Region {region} - Image URL: {training_page.current_program.main_image.url}")
+            print(f"🔍 Region {region} - Image name: {training_page.current_program.main_image.name}")
         
         # Note: We don't check for current_program here anymore
         # Sessions should be shown regardless of whether a current_program is assigned
