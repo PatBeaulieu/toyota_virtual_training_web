@@ -200,22 +200,21 @@
             const timeHelpText = document.getElementById('time-help-text');
             
             // Regional timezone mapping based on region names
-            const regionTimezones = {
-                'Quebec': 'Eastern Time (EST/EDT)',
-                'Central': 'Eastern Time (EST/EDT)',
-                'Pacific': 'Pacific Time (PST/PDT)',
-                'Prairie': 'Central Time (CST/CDT)',
-                'Atlantic': 'Atlantic Time (AST/ADT)'
-            };
-            
             function updateTimeHelpText() {
                 if (regionField && regionField.value) {
-                    // Get the selected option text (region name)
                     const selectedOption = regionField.options[regionField.selectedIndex];
-                    const regionName = selectedOption.text;
-                    
-                    // Find matching timezone
-                    const timezone = regionTimezones[regionName] || 'Eastern Time (EST/EDT)';
+                    const label = (selectedOption && selectedOption.textContent ? selectedOption.textContent : '').toLowerCase();
+                    let timezone = 'Eastern Time (EST/EDT)'; // default Toronto
+                    if (label.includes('pacific')) {
+                        timezone = 'Pacific Time (PST/PDT)';
+                    } else if (label.includes('prairie')) {
+                        timezone = 'Central Time (CST/CDT)';
+                    } else if (label.includes('atlantic')) {
+                        timezone = 'Atlantic Time (AST/ADT)';
+                    } else {
+                        // Quebec and Central both use Eastern (Toronto)
+                        timezone = 'Eastern Time (EST/EDT)';
+                    }
                     timeHelpText.textContent = `Time in ${timezone}`;
                 } else {
                     timeHelpText.textContent = 'Time in Eastern Time (EST/EDT)';
