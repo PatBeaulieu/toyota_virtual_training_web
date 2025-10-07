@@ -93,9 +93,9 @@ def training_page_view(request, region):
 
 def home_redirect(request):
     """
-    Redirect from the main domain to Quebec (default region)
+    Show a simple "Come back later" page for the main domain
     """
-    return redirect('/quebec/')
+    return render(request, 'training_app/coming_soon.html')
 
 
 @login_required
