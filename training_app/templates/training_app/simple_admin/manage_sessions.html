@@ -280,7 +280,10 @@
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Time:</span>
-                            <span class="detail-value">{{ session.time_est|time:"g:i A" }} (Eastern Time)</span>
+                            <span class="detail-value">
+                                {{ session.time_est|time:"g:i A" }}
+                                ({% if session.training_page.region == 'pacific' %}Pacific Time{% elif session.training_page.region == 'prairie' %}Central Time{% elif session.training_page.region == 'atlantic' %}Atlantic Time{% else %}Eastern Time{% endif %})
+                            </span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Teams Link:</span>
