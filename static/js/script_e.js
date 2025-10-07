@@ -131,7 +131,8 @@ function updateTrainingStatus() {
 
                 // Restore link if it was removed
                 if (originalLink && linkCell.innerHTML.includes('expired')) {
-                    linkCell.innerHTML = `<a href="${originalLink}" target="_blank">Link</a>`;
+                    const lbl = window.IS_QUEBEC ? 'Joindre la Réunion' : 'Link';
+                    linkCell.innerHTML = `<a href="${originalLink}" target="_blank">${lbl}</a>`;
                 }
             } else if (now >= trainingStart && now <= trainingEnd) {
                 const remainingTime = formatCountdown(trainingEnd - now);
@@ -141,7 +142,7 @@ function updateTrainingStatus() {
                 statusCell.textContent = window.IS_QUEBEC ? 'Session terminée' : 'Session ended';
                 row.classList.add('training-ended');
                 if (!linkCell.innerHTML.includes('expired')) {
-                    linkCell.innerHTML = '<span class="link-expired">Link expired</span>';
+                    linkCell.innerHTML = window.IS_QUEBEC ? '<span class="link-expired">Lien expiré</span>' : '<span class="link-expired">Link expired</span>';
                 }
             }
         } catch (error) {

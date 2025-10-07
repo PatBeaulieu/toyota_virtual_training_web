@@ -521,11 +521,12 @@
                 // Create session datetime (assuming Eastern time since that's what's stored)
                 const sessionDateTime = new Date(sessionDate + 'T' + sessionTime);
                 
-                // Calculate time difference in minutes
+                // Calculate time difference in minutes (future positive, past negative)
                 const timeDiff = (sessionDateTime - now) / (1000 * 60);
                 
-                if (timeDiff <= 60 && timeDiff >= 0) {
-                    // Within 60 minutes - enable link
+                // Enable link from 60 minutes before start until 29 minutes after start
+                if (timeDiff <= 60 && timeDiff >= -29) {
+                    // In allowed window - enable link
                     link.classList.remove('disabled');
                     link.onclick = function(event) {
                         return openTeamsLink(this.href, event);
@@ -541,18 +542,26 @@
                         return false;
                     };
                     if (timingInfo) {
+                        {% if training_page.region == 'quebec' %}
+                        timingInfo.textContent = 'Lien disponible 60 minutes avant le début de la formation';
+                        {% else %}
                         timingInfo.textContent = 'Link available 60 minutes before the training start';
+                        {% endif %}
                         timingInfo.style.display = 'block';
                     }
                 } else {
-                    // Session has passed - disable link
+                    // More than 29 minutes after start - disable link (expired)
                     link.classList.add('disabled');
                     link.onclick = function(event) {
                         event.preventDefault();
                         return false;
                     };
                     if (timingInfo) {
-                        timingInfo.textContent = 'Session has ended';
+                        {% if training_page.region == 'quebec' %}
+                        timingInfo.textContent = 'Lien expiré';
+                        {% else %}
+                        timingInfo.textContent = 'Link expired';
+                        {% endif %}
                         timingInfo.style.display = 'block';
                     }
                 }
