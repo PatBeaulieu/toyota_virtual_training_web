@@ -182,6 +182,36 @@
             <p>Add a new admin user who can manage training sessions</p>
         </div>
         
+        {% if messages %}
+        <div style="margin-bottom: 20px;">
+            {% for message in messages %}
+                <div style="padding: 10px; border-radius: 6px; margin-bottom: 8px; {% if message.tags == 'error' %}background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;{% else %}background:#d4edda;color:#155724;border:1px solid #c3e6cb;{% endif %}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% if form.errors or form.non_field_errors %}
+        <div id="form-errors" style="background:#fff3cd;color:#856404;border:1px solid #ffeeba;padding:12px;border-radius:6px;margin-bottom:20px;">
+            <strong>Validation errors:</strong>
+            <ul style="margin:8px 0 0 18px;">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <script>
+            // Surface server-side validation in console for debugging in production
+            try {
+                console.error('Create User - form errors:', JSON.parse('{{ form.errors.as_json|escapejs }}'));
+            } catch (e) {}
+        </script>
+        {% endif %}
+        
         <div class="user-types">
             <h4>👑 User Types:</h4>
             <div class="user-type">
@@ -207,24 +237,28 @@
                 <div class="form-group">
                     <label for="{{ form.email.id_for_label }}">Email Address *</label>
                     {{ form.email }}
+                    {{ form.email.errors }}
                     <div class="help-text">User's email address</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="{{ form.first_name.id_for_label }}">First Name</label>
                     {{ form.first_name }}
+                    {{ form.first_name.errors }}
                     <div class="help-text">User's first name</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="{{ form.last_name.id_for_label }}">Last Name</label>
                     {{ form.last_name }}
+                    {{ form.last_name.errors }}
                     <div class="help-text">User's last name</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="{{ form.user_type.id_for_label }}">User Type *</label>
                     {{ form.user_type }}
+                    {{ form.user_type.errors }}
                     <div class="help-text">Master users can manage everything, Admin users can manage assigned regions</div>
                 </div>
                 
@@ -233,18 +267,21 @@
                     <div class="checkbox-group">
                         {{ form.assigned_regions }}
                     </div>
+                    {{ form.assigned_regions.errors }}
                     <div class="help-text">Select which training locations this admin user can manage (only applies to admin users)</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="{{ form.password.id_for_label }}">Password *</label>
                     {{ form.password }}
+                    {{ form.password.errors }}
                     <div class="help-text">Secure password for the user</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="{{ form.confirm_password.id_for_label }}">Confirm Password *</label>
                     {{ form.confirm_password }}
+                    {{ form.confirm_password.errors }}
                     <div class="help-text">Re-enter the password to confirm</div>
                 </div>
                 
