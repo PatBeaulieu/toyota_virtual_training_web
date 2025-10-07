@@ -316,13 +316,19 @@
     </a>
     {% endif %}
     
+    {% if sessions %}
     <h1>{{ training_page.title }}</h1>
+    {% else %}
+    <h1>No Virtual Training Scheduled</h1>
+    {% endif %}
     <div class="region-zone-display" style="color: white; font-weight: bold; margin: 10px 0 20px 0; font-size: 1.2em; text-align: center; background: none; padding: 0; border-radius: 0;">{{ training_page.get_region_display }} Zone</div>
+    {% if sessions %}
     <h6 id="dateTimeDisplay">Loading date and time...</h6>
     <div class="timezone-info">
         <strong>All times shown in {{ region_display }} Time ({{ regional_tz_abbr }})</strong><br>
         Your local time: <span id="localTime">Loading...</span>
     </div>
+    {% endif %}
 
     <div class="table-container">
         <table class="rounded-corners">
