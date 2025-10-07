@@ -162,6 +162,9 @@
             <h4>📋 Current Course Information:</h4>
             <p><strong>Name:</strong> {{ course.name }}</p>
             <p><strong>Title:</strong> {{ course.title }}</p>
+            {% if course.title_fr %}
+                <p><strong>French Title:</strong> {{ course.title_fr }}</p>
+            {% endif %}
             {% if course.description %}
                 <p><strong>Description:</strong> {{ course.description }}</p>
             {% endif %}
@@ -187,6 +190,11 @@
                     <label for="{{ form.title.id_for_label }}">Course Title *</label>
                     {{ form.title }}
                     <div class="help-text">Full descriptive title of the training course</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_title_fr">French Title (optional for Quebec)</label>
+                    <input type="text" name="title_fr" maxlength="200" class="form-control" id="id_title_fr" value="{{ course.title_fr }}" placeholder="Titre en français (utilisé pour le Québec)">
                 </div>
                 
                 <div class="form-group">

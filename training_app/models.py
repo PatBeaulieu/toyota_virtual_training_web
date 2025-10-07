@@ -51,6 +51,13 @@ class TrainingProgram(models.Model):
         help_text="Full title of the training program (e.g., PA465 2026 bZ Virtual Training)"
     )
     
+    # Optional French title for Quebec display
+    title_fr = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="French title (used for Quebec page if provided)"
+    )
+    
     description = models.TextField(
         blank=True,
         help_text="Description of the training program"

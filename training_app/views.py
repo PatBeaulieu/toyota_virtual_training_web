@@ -62,12 +62,23 @@ def training_page_view(request, region):
                 sessions_with_regional_time.append(session)
         
         # Prepare context data for the template
+        # Determine display title (French for Quebec if available)
+        display_title = training_page.title
+        try:
+            if training_page.region == 'quebec':
+                prog = training_page.current_program
+                if prog and getattr(prog, 'title_fr', ''):
+                    display_title = prog.title_fr
+        except Exception:
+            pass
+
         context = {
             'training_page': training_page,
             'sessions': sessions_with_regional_time,
             'region_display': training_page.get_region_display(),
             'timezone': training_page.timezone,
             'regional_tz_abbr': regional_tz_abbr,
+            'display_title': display_title,
         }
         
         return render(request, 'training_app/training_page.html', context)

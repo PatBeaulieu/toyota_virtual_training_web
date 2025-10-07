@@ -1,12 +1,30 @@
-{% load static %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ training_page.title }}</title>
+    <title>
+        {% if sessions %}
+            {% if training_page.region == 'quebec' and training_page.current_program and training_page.current_program.title_fr %}
+                {{ training_page.current_program.title_fr }}
+            {% else %}
+                {{ training_page.title }}
+            {% endif %}
+        {% else %}
+            {% if training_page.region == 'quebec' %}
+                Aucune formation n’est prévue pour le moment. Veuillez revenir plus tard.
+            {% else %}
+                No training sessions scheduled yet. Please check back later.
+            {% endif %}
+        {% endif %}
+    </title>
     <link href="{% static 'css/style.css' %}?v=2" rel="stylesheet">
+    <script>
+        // Expose region to client JS for simple per-region localization
+        window.IS_QUEBEC = {% if training_page.region == 'quebec' %}true{% else %}false{% endif %};
+    </script>
     <script src="{% static 'js/script_e.js' %}?v=2"></script>
     <style>
         /* Mobile-first responsive design */
@@ -316,36 +334,79 @@
     </a>
     {% endif %}
     
-    <h1>{{ training_page.title }}</h1>
-    <div class="region-zone-display" style="color: white; font-weight: bold; margin: 10px 0 20px 0; font-size: 1.2em; text-align: center; background: none; padding: 0; border-radius: 0;">{{ training_page.get_region_display }} Zone</div>
-    <h6 id="dateTimeDisplay">Loading date and time...</h6>
+    <h1>
+        {% if sessions %}
+            {% if training_page.region == 'quebec' and training_page.current_program and training_page.current_program.title_fr %}
+                {{ training_page.current_program.title_fr }}
+            {% else %}
+                {{ training_page.title }}
+            {% endif %}
+        {% else %}
+            {% if training_page.region == 'quebec' %}
+                Aucune formation n’est prévue pour le moment. Veuillez revenir plus tard.
+            {% else %}
+                No training sessions scheduled yet. Please check back later.
+            {% endif %}
+        {% endif %}
+    </h1>
+    <div class="region-zone-display" style="color: white; font-weight: bold; margin: 10px 0 20px 0; font-size: 1.2em; text-align: center; background: none; padding: 0; border-radius: 0;">{% if training_page.region == 'quebec' %}Zone du Québec{% else %}{{ training_page.get_region_display }} Zone{% endif %}</div>
+    <h6 id="dateTimeDisplay">{% if training_page.region == 'quebec' %}Chargement de la date et de l'heure...{% else %}Loading date and time...{% endif %}</h6>
     <div class="timezone-info">
+        {% if training_page.region == 'quebec' %}
+        <strong>Toutes les heures sont affichées en heure du {{ region_display }} ({{ regional_tz_abbr }})</strong><br>
+        Votre heure locale: <span id="localTime">Chargement...</span>
+        {% else %}
         <strong>All times shown in {{ region_display }} Time ({{ regional_tz_abbr }})</strong><br>
         Your local time: <span id="localTime">Loading...</span>
+        {% endif %}
     </div>
 
     <div class="table-container">
         <table class="rounded-corners">
             <tbody>
             <tr class="head">
+                {% if training_page.region == 'quebec' %}
+                <th>Date</th>
+                <th>Heure ({{ regional_tz_abbr }})</th>
+                <th>Votre Heure Locale</th>
+                <th>Lien</th>
+                <th>Statut</th>
+                {% else %}
                 <th>Date</th>
                 <th>Time ({{ regional_tz_abbr }})</th>
                 <th>Your Local Time</th>
                 <th>Link</th>
-                <th>Status</th>
+                <th>{% if training_page.region == 'quebec' %}Statut{% else %}Status{% endif %}</th>
+                {% endif %}
             </tr>
             
             {% for session in sessions %}
             <tr data-date="{{ session.date|date:'Y-m-d' }}" data-time="{{ session.time_est|time:'H:i' }}" data-session-id="{{ session.id }}">
+                {% if training_page.region == 'quebec' %}
+                <td>{% language 'fr' %}{{ session.date|date:"j F" }}{% endlanguage %}</td>
+                {% else %}
                 <td>{{ session.date|date:"F jS" }}</td>
+                {% endif %}
+                {% if training_page.region == 'quebec' %}
+                <td>{{ session.regional_time|time:"H:i" }}</td>
+                {% else %}
                 <td>{{ session.regional_time|time:"g:i A" }}</td>
+                {% endif %}
                 <td class="local-time">Loading...</td>
                 <td class="link-cell">
                     {% if session.teams_link %}
+                        {% if training_page.region == 'quebec' %}
+                        <a href="{{ session.teams_link }}" target="_blank" onclick="openTeamsLink(this.href, event)" class="teams-link" data-session-date="{{ session.date|date:'Y-m-d' }}" data-session-time="{{ session.time_est|time:'H:i' }}">Joindre la Réunion</a>
+                        {% else %}
                         <a href="{{ session.teams_link }}" target="_blank" onclick="openTeamsLink(this.href, event)" class="teams-link" data-session-date="{{ session.date|date:'Y-m-d' }}" data-session-time="{{ session.time_est|time:'H:i' }}">Join Meeting</a>
+                        {% endif %}
                         <div class="link-timing-info" style="display: none; font-size: 0.8em; color: #666; margin-top: 5px;"></div>
                     {% else %}
+                        {% if training_page.region == 'quebec' %}
+                        <span class="link-missing">Lien à venir</span>
+                        {% else %}
                         <span class="link-missing">Link TBD</span>
+                        {% endif %}
                     {% endif %}
                 </td>
                 <td class="status-cell">Loading...</td>
@@ -353,7 +414,11 @@
             {% empty %}
             <tr>
                 <td colspan="5" style="text-align: center; padding: 20px; font-style: italic;">
+                    {% if training_page.region == 'quebec' %}
+                    Aucune formation n’est prévue pour le moment. Veuillez revenir plus tard.
+                    {% else %}
                     No training sessions scheduled yet. Please check back later.
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
@@ -363,8 +428,8 @@
         
         <p></p>
         {% if training_page.current_program and training_page.current_program.main_image %}
-        <div style="text-align: center; margin: 20px 0;">
-            <img id="training-image" src="{{ training_page.current_program.main_image.url }}?v={{ training_page.current_program.updated_at|date:'U' }}&cache={{ training_page.current_program.id }}&t={{ 'now'|date:'U' }}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;" onerror="this.style.display='none';">
+        <div class="table-container" style="text-align: center;">
+            <img id="training-image" src="{{ training_page.current_program.main_image.url }}?v={{ training_page.current_program.updated_at|date:'U' }}&cache={{ training_page.current_program.id }}" alt="{{ training_page.title }}" style="width: 100%; height: auto; object-fit: contain; border: 2px solid white; border-radius: 10px; display: block;" onerror="this.style.display='none';">
             <script>
                 // Force refresh image to prevent caching issues
                 document.addEventListener('DOMContentLoaded', function() {
@@ -376,8 +441,8 @@
             </script>
         </div>
         {% else %}
-        <div style="text-align: center; margin: 20px 0;">
-            <img src="{% static 'training_images/RAV4.png' %}" alt="{{ training_page.title }}" style="max-width: 100%; height: auto; border: 2px solid white; border-radius: 10px;">
+        <div class="table-container" style="text-align: center;">
+            <img src="{% static 'training_images/RAV4.png' %}" alt="{{ training_page.title }}" style="width: 100%; height: auto; object-fit: contain; border: 2px solid white; border-radius: 10px; display: block;">
         </div>
         {% endif %}
     </div>

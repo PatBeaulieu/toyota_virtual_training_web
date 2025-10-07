@@ -141,7 +141,7 @@ class SimpleTrainingProgramForm(forms.ModelForm):
     
     class Meta:
         model = TrainingProgram
-        fields = ['name', 'title', 'description', 'main_image']
+        fields = ['name', 'title', 'title_fr', 'description', 'main_image']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -150,6 +150,10 @@ class SimpleTrainingProgramForm(forms.ModelForm):
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'e.g., PA466 New Grand Highlander Virtual Training'
+            }),
+            'title_fr': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'ex.: Formation virtuelle PA466 Nouveau Grand Highlander'
             }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',

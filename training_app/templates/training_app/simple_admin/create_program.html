@@ -150,6 +150,12 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="id_title_fr">French Title (optional for Quebec)</label>
+                    <input type="text" name="title_fr" maxlength="200" class="form-control" id="id_title_fr" placeholder="Titre en français (utilisé pour le Québec)">
+                    <div class="help-text">If provided, Quebec page will show this French title instead of the English title</div>
+                </div>
+                
+                <div class="form-group">
                     <label for="{{ form.description.id_for_label }}">Description</label>
                     {{ form.description }}
                     <div class="help-text">Brief description of what this training covers</div>

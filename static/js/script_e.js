@@ -18,10 +18,17 @@ function formatCountdown(ms) {
     const minutes = totalMinutes % 60;
 
     const parts = [];
-    if (days > 0) parts.push(`${days}d`);
-    if (hours > 0) parts.push(`${hours}h`);
-    if (minutes > 0 || parts.length === 0) parts.push(`${minutes}m`);
-    return parts.join(' ');
+    if (window.IS_QUEBEC) {
+        if (days > 0) parts.push(`${days}j`);
+        if (hours > 0) parts.push(`${hours}h`);
+        if (minutes > 0 || parts.length === 0) parts.push(`${minutes}m`);
+        return parts.join(' ');
+    } else {
+        if (days > 0) parts.push(`${days}d`);
+        if (hours > 0) parts.push(`${hours}h`);
+        if (minutes > 0 || parts.length === 0) parts.push(`${minutes}m`);
+        return parts.join(' ');
+    }
 }
 
 // Reliable Eastern DateTime creation using ISO strings
@@ -97,13 +104,20 @@ function updateTrainingStatus() {
             // Cache local time formatting (only calculate once)
             if (!session.localTimeFormatted) {
                 // Convert Eastern time to user's actual local timezone
-                session.localTimeFormatted = trainingStart.toLocaleString('en-US', {
+                const locale = window.IS_QUEBEC ? 'fr-CA' : 'en-US';
+                const opts = {
                     month: 'short',
                     day: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit',
                     timeZoneName: 'short'
-                });
+                };
+                if (window.IS_QUEBEC) {
+                    // Force 24-hour in French locale
+                    opts.hour12 = false;
+                    opts.hourCycle = 'h23';
+                }
+                session.localTimeFormatted = trainingStart.toLocaleString(locale, opts);
                 localTimeCell.textContent = session.localTimeFormatted;
             }
 
@@ -112,7 +126,7 @@ function updateTrainingStatus() {
 
             if (now < trainingStart) {
                 const countdown = formatCountdown(trainingStart - now);
-                statusCell.textContent = `Starts in ${countdown}`;
+                statusCell.textContent = window.IS_QUEBEC ? `Commence dans ${countdown}` : `Starts in ${countdown}`;
                 row.classList.add('training-upcoming');
 
                 // Restore link if it was removed
@@ -121,10 +135,10 @@ function updateTrainingStatus() {
                 }
             } else if (now >= trainingStart && now <= trainingEnd) {
                 const remainingTime = formatCountdown(trainingEnd - now);
-                statusCell.textContent = `Active - ${remainingTime} remaining`;
+                statusCell.textContent = window.IS_QUEBEC ? `En cours - reste ${remainingTime}` : `Active - ${remainingTime} remaining`;
                 row.classList.add('training-active');
             } else {
-                statusCell.textContent = 'Session ended';
+                statusCell.textContent = window.IS_QUEBEC ? 'Session terminée' : 'Session ended';
                 row.classList.add('training-ended');
                 if (!linkCell.innerHTML.includes('expired')) {
                     linkCell.innerHTML = '<span class="link-expired">Link expired</span>';
@@ -160,7 +174,8 @@ function updateDateTime() {
             minute: '2-digit',
             second: '2-digit'
         };
-        cachedDOMElements.estDisplay.textContent = now.toLocaleString('en-US', estOptions) + ' (EST/EDT)';
+        const estLocale = window.IS_QUEBEC ? 'fr-CA' : 'en-US';
+        cachedDOMElements.estDisplay.textContent = now.toLocaleString(estLocale, estOptions) + ' (EST/EDT)';
     }
 
     // Local browser time display
@@ -174,7 +189,8 @@ function updateDateTime() {
             second: '2-digit',
             timeZoneName: 'short'
         };
-        cachedDOMElements.localDisplay.textContent = now.toLocaleString('en-US', localOptions);
+        const localLocale = window.IS_QUEBEC ? 'fr-CA' : 'en-US';
+        cachedDOMElements.localDisplay.textContent = now.toLocaleString(localLocale, localOptions);
     }
 }
 
