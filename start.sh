@@ -11,7 +11,7 @@ echo "📦 Collecting static files..."
 python manage.py collectstatic --noinput
 
 echo "🌍 Initializing regional training pages..."
-python initialize_regions.py
+python manage.py setup_regions
 
 echo "👤 Creating superuser (if configured)..."
 if [ -n "$DJANGO_SUPERUSER_USERNAME" ]; then
