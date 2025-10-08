@@ -4,7 +4,13 @@
 # Get PORT from environment or default to 8000
 PORT=${PORT:-8000}
 
-echo "Starting gunicorn on port $PORT"
+echo "🔧 Running database migrations..."
+python manage.py migrate --noinput
+
+echo "📦 Collecting static files..."
+python manage.py collectstatic --noinput
+
+echo "🚀 Starting gunicorn on port $PORT"
 
 # Start gunicorn
 exec gunicorn toyota_training.wsgi:application \
