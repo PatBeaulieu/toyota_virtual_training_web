@@ -9,6 +9,7 @@ Allows accessing regions via subdomains:
 """
 from django.http import Http404
 from django.shortcuts import redirect
+from django.urls import resolve, Resolver404
 from .models import TrainingPage
 
 
@@ -45,10 +46,11 @@ class SubdomainRoutingMiddleware:
                 request.subdomain_region = subdomain
                 
                 # If accessing the root path with a region subdomain,
-                # redirect to the region view
+                # rewrite the path internally to /{region}/
                 if request.path == '/' or request.path == '':
-                    # Redirect to the region page view
-                    return redirect(f'/{subdomain}/')
+                    # Rewrite the path to the region URL
+                    request.path = f'/{subdomain}/'
+                    request.path_info = f'/{subdomain}/'
         
         # Continue with normal request processing
         response = self.get_response(request)
