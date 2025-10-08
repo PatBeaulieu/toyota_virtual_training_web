@@ -124,22 +124,31 @@ elif os.environ.get('DB_NAME'):
     print("✅ Using PostgreSQL database")
     
 else:
-    # No database configuration found - FAIL LOUDLY in production
-    if not DEBUG:
+    # No database configuration found
+    # Check if we're running a command that doesn't need database (like collectstatic during build)
+    import sys
+    RAILWAY_BUILD_COMMANDS = ['collectstatic', 'compress', 'compilemessages']
+    is_build_command = any(cmd in sys.argv for cmd in RAILWAY_BUILD_COMMANDS)
+    
+    if not DEBUG and not is_build_command:
+        # FAIL LOUDLY in production for runtime commands
         raise RuntimeError(
             "🚨 CRITICAL: No PostgreSQL configuration found!\n"
             "Production requires PostgreSQL. Please set DATABASE_URL or individual DB_* variables.\n"
             "See PRODUCTION_DEPLOYMENT_POSTGRESQL.md for configuration instructions."
         )
     else:
-        # Allow SQLite in development/testing only
+        # Use dummy database for build-time commands or development
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
                 'NAME': BASE_DIR / 'db.sqlite3',
             }
         }
-        print("⚠️ Using SQLite database (DEVELOPMENT MODE ONLY)")
+        if is_build_command:
+            print("⚠️ Using dummy database for build command (DATABASE_URL will be required at runtime)")
+        else:
+            print("⚠️ Using SQLite database (DEVELOPMENT MODE ONLY)")
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
