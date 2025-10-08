@@ -31,8 +31,9 @@ ALLOWED_HOSTS = [
     'render.com',      # Main Render domain
     '.railway.app',    # Railway domains
     'railway.app',     # Railway main domain
-    '.rtmtoyota.ca',  # Allow all subdomains
-    '.yourdomain.com',  # Replace with your actual domain
+    'rtmtoyota.ca',    # Main domain
+    '.rtmtoyota.ca',   # Wildcard - allows quebec.rtmtoyota.ca, central.rtmtoyota.ca, etc.
+    '*.rtmtoyota.ca',  # Explicit wildcard notation
 ]
 
 # Add Render's external hostname if available (this is automatically set by Render)
@@ -70,6 +71,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
+    'training_app.subdomain_middleware.SubdomainRoutingMiddleware',  # Subdomain routing
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -169,9 +171,10 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 CSRF_TRUSTED_ORIGINS = [
+    'https://training.rtmtoyota.ca',  # Your custom domain
     'https://rtmtoyota.ca',
     'https://admin.rtmtoyota.ca',
-    'https://yourdomain.com',  # Replace with your actual domain
+    'https://*.rtmtoyota.ca',  # Allow all subdomains
     'https://*.onrender.com',  # Render domains
     'https://*.render.com',    # Alternative Render domain format
     'https://*.railway.app',   # Railway domains
