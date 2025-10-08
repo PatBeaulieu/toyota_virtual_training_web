@@ -93,8 +93,26 @@ def training_page_view(request, region):
 
 def home_redirect(request):
     """
-    Show a simple "Come back later" page for the main domain
+    Handle root path requests
+    - If on a regional subdomain (quebec.rtmtoyota.ca), show that region's training page
+    - Otherwise, show "coming soon" page for main domain
     """
+    # Get the host and extract subdomain
+    host = request.get_host().split(':')[0]
+    parts = host.split('.')
+    
+    # Valid regions
+    valid_regions = ['quebec', 'central', 'pacific', 'prairie', 'atlantic']
+    
+    # Check if we have a subdomain (more than 2 parts: subdomain.domain.tld)
+    if len(parts) >= 3:
+        subdomain = parts[0]
+        
+        # If subdomain matches a region, serve that region's content
+        if subdomain in valid_regions:
+            return training_page_view(request, subdomain)
+    
+    # Otherwise show "coming soon" page for main domain
     return render(request, 'training_app/coming_soon.html')
 
 

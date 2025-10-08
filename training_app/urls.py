@@ -4,7 +4,8 @@ from . import views
 app_name = 'training_app'
 
 urlpatterns = [
-    # Public training pages
+    # Path-based routing (e.g., rtmtoyota.ca/quebec/)
+    # Subdomain routing (e.g., quebec.rtmtoyota.ca/) is handled in home_redirect view
     path('<str:region>/', views.training_page_view, name='training_page'),
     
     # AJAX endpoints
