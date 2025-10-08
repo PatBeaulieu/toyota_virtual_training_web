@@ -1,0 +1,20 @@
+# Don't deploy these files to Railway
+Dockerfile
+docker-compose.yml
+*.sqlite3
+db.sqlite3
+venv/
+.venv/
+env/
+.env*
+*.pyc
+__pycache__/
+.git/
+.DS_Store
+logs/
+*.log
+.pytest_cache/
+htmlcov/
+.coverage
+node_modules/
+
