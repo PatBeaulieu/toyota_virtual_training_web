@@ -29,6 +29,8 @@ ALLOWED_HOSTS = [
     '.onrender.com',   # Render domains - covers all Render subdomains
     '.render.com',     # Alternative Render domain format
     'render.com',      # Main Render domain
+    '.railway.app',    # Railway domains
+    'railway.app',     # Railway main domain
     '.rtmtoyota.ca',  # Allow all subdomains
     '.yourdomain.com',  # Replace with your actual domain
 ]
@@ -37,6 +39,14 @@ ALLOWED_HOSTS = [
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+# Add Railway's domain if available (this is automatically set by Railway)
+RAILWAY_STATIC_URL = os.environ.get('RAILWAY_STATIC_URL')
+RAILWAY_PUBLIC_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+if RAILWAY_STATIC_URL:
+    ALLOWED_HOSTS.append(RAILWAY_STATIC_URL)
+if RAILWAY_PUBLIC_DOMAIN:
+    ALLOWED_HOSTS.append(RAILWAY_PUBLIC_DOMAIN)
 
 # For development/testing - allow all hosts if DEBUG is True
 if DEBUG:
@@ -155,6 +165,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://yourdomain.com',  # Replace with your actual domain
     'https://*.onrender.com',  # Render domains
     'https://*.render.com',    # Alternative Render domain format
+    'https://*.railway.app',   # Railway domains
 ]
 
 # Static files configuration
