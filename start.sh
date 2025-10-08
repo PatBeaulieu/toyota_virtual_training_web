@@ -1,14 +1,15 @@
 #!/bin/bash
-# Start script for Render deployment
+# Start script for Railway deployment
 
-echo "🚀 Starting Toyota Training application..."
+# Get PORT from environment or default to 8000
+PORT=${PORT:-8000}
 
-# Activate virtual environment if it exists
-if [ -d ".venv" ]; then
-    echo "📦 Activating virtual environment..."
-    source .venv/bin/activate
-fi
+echo "Starting gunicorn on port $PORT"
 
-# Start the application
-echo "🎯 Starting gunicorn server..."
-exec gunicorn toyota_training.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 30
+# Start gunicorn
+exec gunicorn toyota_training.wsgi:application \
+    --bind 0.0.0.0:$PORT \
+    --workers 2 \
+    --timeout 30 \
+    --access-logfile - \
+    --error-logfile -
