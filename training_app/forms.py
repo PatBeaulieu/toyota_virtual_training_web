@@ -171,6 +171,8 @@ class SimpleTrainingSessionForm(forms.ModelForm):
     """
     Simple form for creating training sessions
     Master users can select any region, Admin users can only select from their assigned regions
+    
+    NOTE: The form accepts time in the REGION'S timezone, then converts to Eastern for storage
     """
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -183,10 +185,25 @@ class SimpleTrainingSessionForm(forms.ModelForm):
         self.fields['teams_link'].help_text = "Paste your complete Microsoft Teams meeting link. Long Teams URLs (up to 500 characters) are now supported and will open properly in the Teams app or browser."
         
         # Handle time field initial value for editing
-        if self.instance and self.instance.pk and self.instance.time_est:
-            # Format the time for the widget
-            time_str = self.instance.time_est.strftime('%H:%M')
-            self.initial['time_est'] = time_str
+        # Convert Eastern time (stored) to regional time (displayed) for editing
+        if self.instance and self.instance.pk and self.instance.time_est and self.instance.training_page:
+            import pytz
+            from datetime import datetime, date
+            
+            # Get the region's timezone
+            regional_tz = pytz.timezone(self.instance.training_page.timezone)
+            eastern_tz = pytz.timezone('America/Toronto')
+            
+            # Create a datetime in Eastern time (use today's date for conversion)
+            eastern_datetime = eastern_tz.localize(
+                datetime.combine(date.today(), self.instance.time_est)
+            )
+            
+            # Convert to regional timezone
+            regional_datetime = eastern_datetime.astimezone(regional_tz)
+            
+            # Set the initial value to the regional time
+            self.initial['time_est'] = regional_datetime.time().strftime('%H:%M')
         
         # Auto-select and make read-only if only one active program is available
         if active_programs.count() == 1:
@@ -234,6 +251,38 @@ class SimpleTrainingSessionForm(forms.ModelForm):
                     required=True,
                     help_text="Select which region this training session is for"
                 )
+    
+    def clean(self):
+        """
+        Convert the entered time from regional timezone to Eastern timezone before saving.
+        User enters time in the region's timezone, we store it in Eastern time.
+        """
+        cleaned_data = super().clean()
+        time_est = cleaned_data.get('time_est')
+        training_page = cleaned_data.get('training_page')
+        
+        if time_est and training_page:
+            import pytz
+            from datetime import datetime, date
+            
+            # Get the region's timezone
+            regional_tz = pytz.timezone(training_page.timezone)
+            eastern_tz = pytz.timezone('America/Toronto')
+            
+            # Create a datetime in the region's timezone (use today's date for conversion)
+            regional_datetime = regional_tz.localize(
+                datetime.combine(date.today(), time_est)
+            )
+            
+            # Convert to Eastern timezone
+            eastern_datetime = regional_datetime.astimezone(eastern_tz)
+            
+            # Update the cleaned data with the Eastern time
+            cleaned_data['time_est'] = eastern_datetime.time()
+            
+            logger.info(f"Time conversion: {time_est} {training_page.timezone} → {eastern_datetime.time()} EST for {training_page.region}")
+        
+        return cleaned_data
     
     class Meta:
         model = TrainingSession
