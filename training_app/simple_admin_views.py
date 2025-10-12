@@ -116,6 +116,34 @@ def simple_admin_dashboard(request):
         total_programs = TrainingProgram.objects.filter(is_active=True).count()  # Only active programs
         total_users = 1  # Admin users don't see user count
     
+    # Convert session times from Eastern to regional timezone for display
+    import pytz
+    from datetime import datetime
+    
+    eastern_tz = pytz.timezone('America/Toronto')
+    
+    # Convert times for recent_sessions
+    if 'recent_sessions' in locals() and recent_sessions:
+        for session in recent_sessions:
+            if session.training_page and session.time_est:
+                regional_tz = pytz.timezone(session.training_page.timezone)
+                eastern_datetime = eastern_tz.localize(
+                    datetime.combine(session.date, session.time_est)
+                )
+                regional_datetime = eastern_datetime.astimezone(regional_tz)
+                session.regional_time = regional_datetime.time()
+    
+    # Convert times for calendar_sessions
+    if 'calendar_sessions' in locals() and calendar_sessions:
+        for session in calendar_sessions:
+            if session.training_page and session.time_est:
+                regional_tz = pytz.timezone(session.training_page.timezone)
+                eastern_datetime = eastern_tz.localize(
+                    datetime.combine(session.date, session.time_est)
+                )
+                regional_datetime = eastern_datetime.astimezone(regional_tz)
+                session.regional_time = regional_datetime.time()
+    
     context = {
         'user': user,
         'recent_programs': recent_programs,
@@ -308,6 +336,21 @@ def manage_training_sessions(request):
         sessions = TrainingSession.objects.filter(
             training_page__in=assigned_pages
         ).select_related('training_page').order_by('-date', '-time_est')
+    
+    # Convert session times from Eastern to regional timezone for display
+    import pytz
+    from datetime import datetime
+    
+    eastern_tz = pytz.timezone('America/Toronto')
+    
+    for session in sessions:
+        if session.training_page and session.time_est:
+            regional_tz = pytz.timezone(session.training_page.timezone)
+            eastern_datetime = eastern_tz.localize(
+                datetime.combine(session.date, session.time_est)
+            )
+            regional_datetime = eastern_datetime.astimezone(regional_tz)
+            session.regional_time = regional_datetime.time()
     
     # Add pagination
     paginator = Paginator(sessions, 10)

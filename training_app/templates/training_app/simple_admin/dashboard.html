@@ -663,7 +663,7 @@
             <div class="activity-item">
                 <div>
                     <strong>{{ session.training_page.get_region_display }}</strong> - 
-                    {{ session.date|date:"M j" }} at {{ session.time_est|time:"g:i A" }}
+                    {{ session.date|date:"M j" }} at {% if session.regional_time %}{{ session.regional_time|time:"g:i A" }}{% else %}{{ session.time_est|time:"g:i A" }}{% endif %}
                 </div>
                 <div>
                     <a href="{% url 'simple_admin:edit_training_session' session.id %}" class="btn-secondary">Edit</a>
@@ -734,7 +734,7 @@
             {
                 id: {{ session.id }},
                 date: '{{ session.date|date:"Y-m-d" }}',
-                time: '{{ session.time_est|time:"H:i" }}',
+                time: '{% if session.regional_time %}{{ session.regional_time|time:"H:i" }}{% else %}{{ session.time_est|time:"H:i" }}{% endif %}',
                 program: '{{ session.training_program.name|escapejs }}',
                 region: '{{ session.training_page.region|escapejs }}'
             }{% if not forloop.last %},{% endif %}

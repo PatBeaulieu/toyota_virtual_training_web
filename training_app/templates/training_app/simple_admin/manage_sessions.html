@@ -260,7 +260,7 @@
                         <div class="session-info">
                             <h3>{{ session.training_page.get_region_display }}</h3>
                             <div class="session-meta">
-                                {{ session.date|date:"F j, Y" }} at {{ session.time_est|time:"g:i A" }}
+                                {{ session.date|date:"F j, Y" }} at {% if session.regional_time %}{{ session.regional_time|time:"g:i A" }}{% else %}{{ session.time_est|time:"g:i A" }}{% endif %}
                             </div>
                         </div>
                         <div class="session-actions">
@@ -281,7 +281,7 @@
                         <div class="detail-row">
                             <span class="detail-label">Time:</span>
                             <span class="detail-value">
-                                {{ session.time_est|time:"g:i A" }}
+                                {% if session.regional_time %}{{ session.regional_time|time:"g:i A" }}{% else %}{{ session.time_est|time:"g:i A" }}{% endif %}
                                 ({% if session.training_page.region == 'pacific' %}Pacific Time{% elif session.training_page.region == 'prairie' %}Central Time{% elif session.training_page.region == 'atlantic' %}Atlantic Time{% else %}Eastern Time{% endif %})
                             </span>
                         </div>
